@@ -9,16 +9,9 @@
             background: #f4f6f8;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
-
-        h1 {
-            margin-top: 30px;
-            color: #222;
-        }
-
+        h1 { margin-top: 30px; }
         #chat-box {
             width: 90%;
             max-width: 700px;
@@ -27,53 +20,21 @@
             border-radius: 10px;
             padding: 15px;
             overflow-y: auto;
+            margin: 20px auto;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-top: 20px;
-        }
-
-        .user {
-            text-align: right;
-            margin: 10px 0;
-            color: #0d6efd;
-        }
-
-        .bot {
             text-align: left;
-            margin: 10px 0;
-            color: #333;
         }
-
-        #input-area {
-            margin: 20px;
-            width: 90%;
-            max-width: 700px;
-            display: flex;
-        }
-
+        .user { color: blue; margin: 10px 0; text-align: right; }
+        .bot { color: black; margin: 10px 0; }
         input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px 0 0 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
+            width: 70%;
+            padding: 10px;
         }
-
         button {
-            padding: 12px 20px;
-            border: none;
+            padding: 10px 15px;
             background: #0d6efd;
             color: white;
-            border-radius: 0 6px 6px 0;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0b5ed7;
-        }
-
-        .loading {
-            font-style: italic;
-            color: gray;
+            border: none;
         }
     </style>
 </head>
@@ -83,74 +44,55 @@
 
 <div id="chat-box"></div>
 
-<div id="input-area">
-    <input type="text" id="question" placeholder="Ask your business question..." />
-    <button onclick="askAI()">Ask</button>
-</div>
+<input type="text" id="question" placeholder="Ask your business question..." />
+<button onclick="askAI()">Ask</button>
 
 <script>
-const API_KEY = "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";  // <-- PUT YOUR KEY HERE
+const API_KEY = "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";  // <-- put your Groq key here
 
 async function askAI() {
-    const questionInput = document.getElementById("question");
-    const chatBox = document.getElementById("chat-box");
-    const question = questionInput.value.trim();
-
+    const input = document.getElementById("question");
+    const chat = document.getElementById("chat-box");
+    const question = input.value.trim();
     if (!question) return;
 
-    // Show user message
-    chatBox.innerHTML += `<div class="user"><b>You:</b> ${question}</div>`;
-    questionInput.value = "";
+    chat.innerHTML += `<div class="user"><b>You:</b> ${question}</div>`;
+    input.value = "";
 
-    // Show loading
-    const loadingDiv = document.createElement("div");
-    loadingDiv.className = "bot loading";
-    loadingDiv.innerHTML = "Metocart AI is thinking...";
-    chatBox.appendChild(loadingDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    chat.innerHTML += `<div class="bot">Thinking...</div>`;
+    chat.scrollTop = chat.scrollHeight;
 
     try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Authorization": "Bearer " + API_KEY,
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://mohammedsammkhan-droid.github.io",
-                "X-Title": "Metocart AI"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "openai/gpt-3.5-turbo",
+                model: "llama3-8b-8192",
                 messages: [
-                    { role: "system", content: "You are an expert business assistant helping with startup ideas, market research, and growth strategies." },
+                    { role: "system", content: "You are a business expert AI assistant." },
                     { role: "user", content: question }
                 ]
             })
         });
 
         const data = await response.json();
-        loadingDiv.remove();
+        chat.innerHTML = chat.innerHTML.replace("Thinking...", "");
 
         if (!response.ok) {
-            chatBox.innerHTML += `<div class="bot">Error: ${JSON.stringify(data)}</div>`;
+            chat.innerHTML += `<div class="bot">Error: ${JSON.stringify(data)}</div>`;
             return;
         }
 
-        const answer = data.choices[0].message.content;
-        chatBox.innerHTML += `<div class="bot"><b>Metocart AI:</b> ${answer}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
+        chat.innerHTML += `<div class="bot"><b>Metocart AI:</b> ${data.choices[0].message.content}</div>`;
+        chat.scrollTop = chat.scrollHeight;
 
-    } catch (error) {
-        loadingDiv.remove();
-        chatBox.innerHTML += `<div class="bot">Network error. Please try again.</div>`;
+    } catch (err) {
+        chat.innerHTML += `<div class="bot">Network error.</div>`;
     }
 }
-
-// Press Enter to send
-document.getElementById("question").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        askAI();
-    }
-});
 </script>
 
 </body>
