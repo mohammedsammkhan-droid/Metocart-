@@ -13,43 +13,39 @@
         }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark-bg); color: var(--text); }
         
-        /* LOGIN SCREEN */
+        /* LOGIN SCREEN - Matches your screenshot 1000772482.png */
         #loginOverlay { position: fixed; inset: 0; background: var(--dark-bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 320px; text-align: center; }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 320px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 
         /* SIDEBAR */
         .sidebar { width: 260px; background: #000; position: fixed; height: 100vh; padding: 25px; border-right: 1px solid var(--border); z-index: 100; }
-        .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         .nav-btn.active { background: var(--primary); color: white; }
         
-        /* MAIN CONTENT - Referenced from your Screenshot */
+        /* MAIN CONTENT - Matches your screenshot 1000772478.png */
         .main-content { margin-left: 290px; padding: 40px; display: none; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border); }
-        .kpi-card small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .kpi-card small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
         .kpi-card h2 { margin: 10px 0 0; font-size: 1.8rem; }
 
-        /* QUICK ACTIONS PANEL */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-        .quick-btn { background: #0f172a; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; }
+        .quick-btn { background: #1e293b; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .quick-btn:hover { background: var(--primary); }
 
         .glass-card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
-        input, select { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: white; width: 100%; margin-bottom: 15px; }
-        .action-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; }
+        input, select { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: white; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
+        .action-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.2s; }
+        .action-btn:active { transform: scale(0.98); }
 
-        /* AI Response Box */
-        #aiResponse { 
-            margin-top: 15px; padding: 15px; border-radius: 12px; 
-            background: #020617; border: 1px solid var(--primary); 
-            font-size: 0.85rem; color: #cbd5e1; display: none; line-height: 1.4;
-        }
+        #aiResponse { margin-top: 15px; padding: 15px; border-radius: 12px; background: #020617; border: 1px solid var(--primary); font-size: 0.85rem; color: #cbd5e1; display: none; line-height: 1.5; }
 
         .section { display: none; }
         .active-section { display: block; }
 
         @media (max-width: 1024px) {
             .kpi-grid { grid-template-columns: 1fr 1fr; }
-            .sidebar { width: 70px; }
+            .sidebar { width: 70px; padding: 15px 10px; }
             .sidebar span, .sidebar h2, .sidebar p { display: none; }
             .main-content { margin-left: 90px; }
         }
@@ -59,10 +55,10 @@
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h2 style="color:var(--india-orange)">Meto OS Login</h2>
-        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">India Pavilion | Dubai Expo</p>
-        <input type="text" id="userInput" placeholder="Username">
-        <input type="password" id="passInput" placeholder="Password">
+        <h2 style="color:var(--india-orange); margin-bottom:5px;">Meto OS Login</h2>
+        <p style="color:#64748b; font-size: 0.75rem; margin-bottom: 25px;">India Pavilion | Dubai Expo</p>
+        <input type="text" id="userInput" placeholder="Username (admin)">
+        <input type="password" id="passInput" placeholder="Password (1234)">
         <button class="action-btn" onclick="handleLogin()">Access System</button>
     </div>
 </div>
@@ -81,7 +77,7 @@
     <div id="home" class="section active-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
             <h1>Store Intelligence</h1>
-            <button class="quick-btn" onclick="location.reload()">🔄 Refresh Data</button>
+            <button class="quick-btn" onclick="updateDash()">🔄 Refresh Data</button>
         </div>
 
         <div class="kpi-grid">
@@ -152,21 +148,27 @@
     let products = JSON.parse(localStorage.getItem('expo_pro_items')) || [];
     let sales = JSON.parse(localStorage.getItem('expo_pro_sales')) || [];
     let cart = [];
-
-    // AI Configuration
     const GROQ_API_KEY = "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";
 
-    // LOGIN LOGIC
+    // LOGIN LOGIC - Specifically fixed for your access issue
     function handleLogin() {
-        const u = document.getElementById('userInput').value;
-        const p = document.getElementById('passInput').value;
+        const u = document.getElementById('userInput').value.trim();
+        const p = document.getElementById('passInput').value.trim();
+        
         if(u === "admin" && p === "1234") {
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('appSidebar').style.display = 'block';
             document.getElementById('appMain').style.display = 'block';
             updateDash();
-        } else { alert("Invalid Credentials"); }
+        } else { 
+            alert("Invalid Credentials. Please use admin / 1234"); 
+        }
     }
+
+    // Allow Login on Enter Key
+    document.getElementById('passInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') handleLogin();
+    });
 
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
@@ -175,5 +177,115 @@
         event.currentTarget.classList.add('active');
         if(id === 'home') updateDash();
         if(id === 'billing') {
-            billProd.innerHTML = '<option value="">Select Item</option>' + 
-                products.map((p, i
+            document.getElementById('billProd').innerHTML = '<option value="">Select Item</option>' + 
+                products.map((p, i) => `<option value="${i}">${p.name} (₹${p.sell})</option>`).join('');
+        }
+    }
+
+    function updateDash() {
+        let rev = 0, prof = 0, gst = 0;
+        sales.forEach(s => { rev += s.total; prof += s.profit; gst += s.gst; });
+        
+        document.getElementById('revDash').innerText = "₹" + rev.toFixed(0);
+        document.getElementById('profitDash').innerText = "₹" + prof.toFixed(0);
+        document.getElementById('gstDash').innerText = "₹" + gst.toFixed(0);
+        document.getElementById('avgDash').innerText = "₹" + (sales.length ? (rev/sales.length).toFixed(0) : 0);
+
+        // Low Stock Logic
+        const lowStock = products.filter(p => p.qty < 5);
+        const lowStockList = document.getElementById('lowStockList');
+        if(lowStock.length > 0) {
+            lowStockList.innerHTML = lowStock.map(p => `<div style="color:var(--india-orange); margin-bottom:5px;">⚠️ ${p.name}: only ${p.qty} left</div>`).join('');
+        } else {
+            lowStockList.innerText = "✅ All stock healthy.";
+        }
+
+        // Render Top 10
+        const pMap = {};
+        sales.forEach(s => s.items.forEach(i => pMap[i.name] = (pMap[i.name] || 0) + i.subtotal));
+        const sorted = Object.entries(pMap).sort((a,b) => b[1]-a[1]).slice(0, 10);
+        const max = sorted.length ? sorted[0][1] : 1;
+        document.getElementById('topList').innerHTML = sorted.map(([name, val]) => `
+            <div style="margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;"><span>${name}</span><span>₹${val.toFixed(0)}</span></div>
+                <div style="background:#000; height:6px; border-radius:10px;"><div style="background:var(--primary); width:${(val/max)*100}%; height:100%; border-radius:10px;"></div></div>
+            </div>
+        `).join('') || "No Expo sales recorded.";
+    }
+
+    async function askAI() {
+        const btn = document.getElementById('aiBtn');
+        const responseBox = document.getElementById('aiResponse');
+        btn.innerText = "⏳ Analyzing...";
+        responseBox.style.display = "block";
+        responseBox.innerHTML = "Consulting AI Business Advisor...";
+
+        const lowStockItems = products.filter(p => p.qty < 5).map(p => p.name).join(", ");
+        const stockStatus = lowStockItems ? `Critical stock on: ${lowStockItems}.` : "Stock levels are healthy.";
+
+        const prompt = `You are a Retail Expert at the Dubai Expo. Stats: Revenue ${revDash.innerText}, Orders ${sales.length}. ${stockStatus} Give a 2-sentence restock strategy.`;
+
+        try {
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: prompt }] })
+            });
+            const data = await response.json();
+            responseBox.innerHTML = `<strong>AI Restock Insight:</strong><br>${data.choices[0].message.content}`;
+        } catch (e) { responseBox.innerHTML = "AI Offline. Check connection."; }
+        finally { btn.innerText = "🤖 Ask AI"; }
+    }
+
+    function addStock() {
+        const name = document.getElementById('pname').value;
+        const cost = parseFloat(document.getElementById('pcost').value);
+        const sell = parseFloat(document.getElementById('psell').value);
+        const qty = parseInt(document.getElementById('pqty').value);
+        if(!name || isNaN(cost)) return alert("Fill all fields");
+        products.push({ name, cost, sell, qty });
+        localStorage.setItem('expo_pro_items', JSON.stringify(products));
+        alert("Stock Added!");
+        document.getElementById('pname').value = ""; document.getElementById('pcost').value = ""; document.getElementById('psell').value = ""; document.getElementById('pqty').value = "";
+    }
+
+    function addToCart() {
+        const idx = document.getElementById('billProd').value;
+        const qty = parseInt(document.getElementById('billQty').value);
+        const p = products[idx];
+        if(!p || qty > p.qty) return alert("Insufficient Stock");
+        cart.push({ name: p.name, qty, price: p.sell, cost: p.cost, subtotal: p.sell * qty, id: idx });
+        renderCart();
+    }
+
+    function renderCart() {
+        let total = cart.reduce((a, b) => a + b.subtotal, 0);
+        document.getElementById('cartItems').innerHTML = cart.map(c => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1f2937"><span>${c.name} x${c.qty}</span><span>₹${c.subtotal}</span></div>`).join('');
+        document.getElementById('cartTotals').style.display = cart.length ? 'block' : 'none';
+        document.getElementById('finalTotal').innerText = "Total (Incl. 18% GST): ₹" + (total * 1.18).toFixed(0);
+    }
+
+    function processSale() {
+        let sTotal = 0, sProf = 0, sGst = 0;
+        cart.forEach(c => {
+            products[c.id].qty -= c.qty;
+            const itemGst = c.subtotal * 0.18;
+            sTotal += (c.subtotal + itemGst);
+            sGst += itemGst;
+            sProf += (c.price - c.cost) * c.qty;
+        });
+        sales.push({ total: sTotal, profit: sProf, gst: sGst, items: [...cart] });
+        localStorage.setItem('expo_pro_items', JSON.stringify(products));
+        localStorage.setItem('expo_pro_sales', JSON.stringify(sales));
+        cart = []; renderCart(); updateDash();
+        alert("Sale Processed!");
+    }
+
+    function exportData() {
+        const blob = new Blob([JSON.stringify({products, sales})], {type: 'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+        a.download = 'India_Expo_Backup.json'; a.click();
+    }
+</script>
+</body>
+</html>
