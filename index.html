@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meto POS | Business Intelligence</title>
+    <title>Meto POS | Business Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -12,23 +12,30 @@
         }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark-bg); color: var(--text); }
         
+        /* LOGIN */
         #loginOverlay { position: fixed; inset: 0; background: var(--dark-bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 320px; text-align: center; }
 
+        /* SIDEBAR */
         .sidebar { width: 260px; background: #000; position: fixed; height: 100vh; padding: 25px; border-right: 1px solid var(--border); z-index: 100; }
         .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .nav-btn.active { background: var(--primary); color: white; }
         
+        /* CONTENT */
         .main-content { margin-left: 290px; padding: 40px; display: none; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-        .kpi-card { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border); }
-        .kpi-card small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .kpi-card { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+        .kpi-card h2 { margin: 5px 0 0; font-size: 1.6rem; }
 
         .glass-card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
         input, select { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: white; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
         .action-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; }
         
-        #aiResponse { margin-top: 15px; padding: 15px; border-radius: 12px; background: #020617; border: 1px solid var(--primary); font-size: 0.85rem; display: none; line-height: 1.5; color: #e2e8f0; }
+        #cartTable { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 0.9rem; }
+        #cartTable th { text-align: left; color: #64748b; padding-bottom: 10px; }
+        #cartTable td { padding: 8px 0; border-bottom: 1px solid #1f2937; }
+
+        #aiResponse { margin-top: 15px; padding: 15px; border-radius: 12px; background: #020617; border: 1px solid var(--primary); font-size: 0.85rem; display: none; }
 
         .section { display: none; }
         .active-section { display: block; }
@@ -39,16 +46,16 @@
 <div id="loginOverlay">
     <div class="login-box">
         <h2 style="color:var(--primary)">Meto POS</h2>
-        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">Store Management Login</p>
+        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">Business Management Login</p>
         <input type="text" id="userInput" placeholder="Username">
         <input type="password" id="passInput" placeholder="Password">
-        <button class="action-btn" onclick="handleLogin()">Enter Dashboard</button>
+        <button class="action-btn" onclick="handleLogin()">Login</button>
     </div>
 </div>
 
 <aside class="sidebar" id="appSidebar" style="display:none">
     <h2 style="color:var(--primary); margin:0;">Meto POS</h2>
-    <p style="color:#64748b; font-size: 0.6rem; font-weight: 800; margin-bottom: 30px;">BUSINESS HUB</p>
+    <p style="color:#64748b; font-size: 0.6rem; font-weight: 800; margin-bottom: 30px;">BUSINESS EDITION</p>
     <button class="nav-btn active" onclick="showTab('home')">🏠 <span>Dashboard</span></button>
     <button class="nav-btn" onclick="showTab('billing')">🧾 <span>Quick Billing</span></button>
     <button class="nav-btn" onclick="showTab('inventory')">📦 <span>Inventory</span></button>
@@ -57,38 +64,66 @@
 
 <main class="main-content" id="appMain">
     <div id="home" class="section active-section">
-        <h1>Store Intelligence</h1>
+        <h1>Store Summary</h1>
         <div class="kpi-grid">
-            <div class="kpi-card"><small>Total Sales</small><h2 id="revDash" style="color:var(--primary)">₹0</h2></div>
+            <div class="kpi-card"><small>Revenue</small><h2 id="revDash">₹0</h2></div>
             <div class="kpi-card"><small>Net Profit</small><h2 id="profitDash" style="color:var(--accent)">₹0</h2></div>
             <div class="kpi-card"><small>GST Collected</small><h2 id="gstDash" style="color:orange">₹0</h2></div>
-            <div class="kpi-card"><small>Inventory Value</small><h2 id="invValDash">₹0</h2></div>
+            <div class="kpi-card"><small>Unique Items</small><h2 id="invCountDash">0</h2></div>
         </div>
+        <div class="glass-card">
+            <h3>🤖 AI Business Advisor</h3>
+            <input type="text" id="aiQuery" placeholder="Ask about profit, stock, or math equations...">
+            <button class="action-btn" id="aiBtn" onclick="askAI()">Analyze Business</button>
+            <div id="aiResponse"></div>
+        </div>
+    </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
-            <div class="glass-card">
-                <h3>📊 Quick Sales Overview</h3>
-                <div id="topList" style="font-size: 0.9rem; color: #94a3b8;">No sales recorded yet.</div>
+    <div id="billing" class="section">
+        <div class="glass-card">
+            <h2>Quick Billing (18% GST)</h2>
+            <div style="display:grid; grid-template-columns: 2fr 1fr 100px; gap:10px; align-items: end;">
+                <div>
+                    <label style="font-size:0.7rem; color:#64748b">CHOOSE PRODUCT</label>
+                    <select id="billProdSelect"><option value="">-- No Stock Available --</option></select>
+                </div>
+                <div>
+                    <label style="font-size:0.7rem; color:#64748b">QTY</label>
+                    <input type="number" id="billQtyInput" value="1" min="1">
+                </div>
+                <button class="action-btn" onclick="addToCart()">Add</button>
             </div>
 
-            <div class="glass-card">
-                <h3>🤖 Meto AI Consultant</h3>
-                <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px;">Ask about your profits, stock, or business math.</p>
-                <input type="text" id="aiQuery" placeholder="e.g., Which product gives the most profit?">
-                <button class="action-btn" id="aiBtn" onclick="askAI()">Ask Business AI</button>
-                <div id="aiResponse"></div>
-                <button class="action-btn" style="background:#1e293b; margin-top:20px;" onclick="if(confirm('Reset all business data?')) {localStorage.clear(); location.reload();}">🧹 Reset System</button>
+            <table id="cartTable">
+                <thead><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                <tbody id="cartItems"></tbody>
+            </table>
+
+            <div style="text-align:right; margin-top:20px;">
+                <h2 id="billTotal" style="margin-bottom:15px;">Final Total: ₹0</h2>
+                <button class="action-btn" style="background:var(--accent); width:250px;" onclick="completeSale()">Complete & Save Sale</button>
             </div>
         </div>
     </div>
 
-    <div id="billing" class="section">...</div>
-    <div id="inventory" class="section">...</div>
+    <div id="inventory" class="section">
+        <div class="glass-card">
+            <h2>Stock Registration</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <input id="p_name" placeholder="Item Name">
+                <input id="p_cost" type="number" placeholder="Purchase Cost (₹)">
+                <input id="p_sell" type="number" placeholder="Selling Price (₹)">
+                <input id="p_qty" type="number" placeholder="Opening Stock Qty">
+            </div>
+            <button class="action-btn" onclick="saveInventory()">Save to Stock</button>
+        </div>
+    </div>
 </main>
 
 <script>
-    let products = JSON.parse(localStorage.getItem('biz_items')) || [];
+    let products = JSON.parse(localStorage.getItem('biz_inventory')) || [];
     let sales = JSON.parse(localStorage.getItem('biz_sales')) || [];
+    let cart = [];
     const GROQ_KEY = "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";
 
     function handleLogin() {
@@ -97,41 +132,116 @@
             document.getElementById('appSidebar').style.display = 'block';
             document.getElementById('appMain').style.display = 'block';
             updateDash();
-        } else { alert("Login Failed"); }
+        } else { alert("Login failed."); }
     }
 
-    function updateDash() {
-        let rev = 0, prof = 0, gst = 0, invVal = 0;
-        sales.forEach(s => { rev += s.total; prof += s.profit; gst += s.gst; });
-        products.forEach(p => { invVal += (p.cost * p.qty); });
+    function showTab(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active-section');
+        event.currentTarget.classList.add('active');
+        if(id === 'billing') refreshProductList();
+        updateDash();
+    }
+
+    // --- INVENTORY LOGIC ---
+    function saveInventory() {
+        const name = document.getElementById('p_name').value;
+        const cost = parseFloat(document.getElementById('p_cost').value);
+        const sell = parseFloat(document.getElementById('p_sell').value);
+        const qty = parseInt(document.getElementById('p_qty').value);
+
+        if(!name || isNaN(cost) || isNaN(sell) || isNaN(qty)) return alert("Fill all fields correctly!");
+
+        products.push({ name, cost, sell, qty });
+        localStorage.setItem('biz_inventory', JSON.stringify(products));
+        alert(name + " added successfully.");
         
+        // Clear inputs
+        document.getElementById('p_name').value = ''; document.getElementById('p_cost').value = '';
+        document.getElementById('p_sell').value = ''; document.getElementById('p_qty').value = '';
+        updateDash();
+    }
+
+    // --- BILLING LOGIC ---
+    function refreshProductList() {
+        const select = document.getElementById('billProdSelect');
+        if(products.length === 0) {
+            select.innerHTML = '<option value="">-- No Stock --</option>';
+            return;
+        }
+        select.innerHTML = products.map((p, i) => 
+            `<option value="${i}">${p.name} (Stock: ${p.qty}) - ₹${p.sell}</option>`
+        ).join('');
+    }
+
+    function addToCart() {
+        const idx = document.getElementById('billProdSelect').value;
+        if(idx === "") return;
+        const qty = parseInt(document.getElementById('billQtyInput').value);
+        const p = products[idx];
+
+        if(qty > p.qty) return alert("Not enough stock for " + p.name);
+
+        const subtotal = p.sell * qty;
+        cart.push({ name: p.name, qty, price: p.sell, cost: p.cost, subtotal, id: idx });
+        renderCart();
+    }
+
+    function renderCart() {
+        let total = cart.reduce((a, b) => a + b.subtotal, 0);
+        const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = cart.map(c => `
+            <tr>
+                <td>${c.name}</td>
+                <td>${c.qty}</td>
+                <td>₹${c.price}</td>
+                <td>₹${c.subtotal}</td>
+            </tr>
+        `).join('');
+        
+        document.getElementById('billTotal').innerText = "Final Total (Inc. GST): ₹" + (total * 1.18).toFixed(0);
+    }
+
+    function completeSale() {
+        if(cart.length === 0) return alert("Cart is empty.");
+        let totalRev = 0, totalProf = 0, totalGst = 0;
+
+        cart.forEach(c => {
+            // Deduct from inventory
+            products[c.id].qty -= c.qty;
+            const gst = c.subtotal * 0.18;
+            totalRev += (c.subtotal + gst);
+            totalGst += gst;
+            totalProf += (c.price - c.cost) * c.qty;
+        });
+
+        sales.push({ total: totalRev, profit: totalProf, gst: totalGst });
+        localStorage.setItem('biz_inventory', JSON.stringify(products));
+        localStorage.setItem('biz_sales', JSON.stringify(sales));
+
+        alert("Sale Recorded & Inventory Updated!");
+        cart = []; renderCart(); updateDash(); refreshProductList();
+    }
+
+    // --- DASHBOARD & AI ---
+    function updateDash() {
+        let rev = 0, prof = 0, gst = 0;
+        sales.forEach(s => { rev += s.total; prof += s.profit; gst += s.gst; });
         document.getElementById('revDash').innerText = "₹" + rev.toFixed(0);
         document.getElementById('profitDash').innerText = "₹" + prof.toFixed(0);
         document.getElementById('gstDash').innerText = "₹" + gst.toFixed(0);
-        document.getElementById('invValDash').innerText = "₹" + invVal.toFixed(0);
+        document.getElementById('invCountDash').innerText = products.length;
     }
 
-    // IMPROVED AI: Now answers specific business questions using live data
     async function askAI() {
+        const query = document.getElementById('aiQuery').value;
+        if(!query) return;
         const btn = document.getElementById('aiBtn');
         const box = document.getElementById('aiResponse');
-        const query = document.getElementById('aiQuery').value;
-        
-        if(!query) return alert("Please type your question.");
+        btn.innerText = "⏳ Consulting Meto AI..."; box.style.display = "block";
 
-        btn.innerText = "⏳ Analyzing Business Records...";
-        box.style.display = "block";
-        box.innerHTML = "Thinking...";
-
-        // Context Data for the AI
-        const context = `
-            Shop Data:
-            Revenue: ₹${revDash.innerText}
-            Total Profit: ₹${profitDash.innerText}
-            Stock List: ${products.map(p => p.name + "(Qty:" + p.qty + ")").join(", ")}
-            The owner wants to know: "${query}"
-            Provide a helpful, factual 2-sentence answer based on the numbers above.
-        `;
+        const context = `Business Report: Total Revenue ₹${revDash.innerText}, Total Profit ₹${profitDash.innerText}, Stock levels: ${products.map(p => p.name + ":" + p.qty).join(", ")}. Question: ${query}`;
 
         try {
             const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -141,13 +251,8 @@
             });
             const data = await res.json();
             box.innerHTML = `<strong>AI Response:</strong><br>${data.choices[0].message.content}`;
-        } catch (e) { box.innerText = "AI Offline. Check internet."; }
-        finally { btn.innerText = "Ask Business AI"; }
-    }
-
-    function showTab(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-        document.getElementById(id).classList.add('active-section');
+        } catch (e) { box.innerText = "Error contacting AI Advisor."; }
+        finally { btn.innerText = "Analyze Business"; }
     }
 </script>
 </body>
