@@ -13,19 +13,23 @@
         }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark-bg); color: var(--text); }
         
+        /* LOGIN SCREEN */
         #loginOverlay { position: fixed; inset: 0; background: var(--dark-bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 320px; text-align: center; }
 
+        /* SIDEBAR */
         .sidebar { width: 260px; background: #000; position: fixed; height: 100vh; padding: 25px; border-right: 1px solid var(--border); z-index: 100; }
         .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .nav-btn.active { background: var(--primary); color: white; }
         
+        /* MAIN CONTENT - Referenced from your Screenshot */
         .main-content { margin-left: 290px; padding: 40px; display: none; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border); }
         .kpi-card small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
         .kpi-card h2 { margin: 10px 0 0; font-size: 1.8rem; }
 
+        /* QUICK ACTIONS PANEL */
         .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
         .quick-btn { background: #0f172a; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.8rem; }
 
@@ -33,7 +37,12 @@
         input, select { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: white; width: 100%; margin-bottom: 15px; }
         .action-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; }
 
-        #aiResponse { background: #020617; padding: 15px; border-radius: 12px; margin-top: 15px; font-size: 0.85rem; border: 1px solid var(--primary); display: none; line-height: 1.5; color: #cbd5e1; }
+        /* AI Response Box */
+        #aiResponse { 
+            margin-top: 15px; padding: 15px; border-radius: 12px; 
+            background: #020617; border: 1px solid var(--primary); 
+            font-size: 0.85rem; color: #cbd5e1; display: none; line-height: 1.4;
+        }
 
         .section { display: none; }
         .active-section { display: block; }
@@ -51,6 +60,7 @@
 <div id="loginOverlay">
     <div class="login-box">
         <h2 style="color:var(--india-orange)">Meto OS Login</h2>
+        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">India Pavilion | Dubai Expo</p>
         <input type="text" id="userInput" placeholder="Username">
         <input type="password" id="passInput" placeholder="Password">
         <button class="action-btn" onclick="handleLogin()">Access System</button>
@@ -60,6 +70,7 @@
 <aside class="sidebar" id="appSidebar" style="display:none">
     <h2 style="color:var(--india-orange); margin:0;">Meto OS</h2>
     <p style="color:var(--india-green); font-size: 0.6rem; font-weight: 800; margin-bottom: 30px;">INDIA EXPO EDITION</p>
+    
     <button class="nav-btn active" onclick="showTab('home')">🏠 <span>Dashboard</span></button>
     <button class="nav-btn" onclick="showTab('billing')">🧾 <span>Quick Bill</span></button>
     <button class="nav-btn" onclick="showTab('inventory')">📦 <span>Inventory</span></button>
@@ -68,18 +79,22 @@
 
 <main class="main-content" id="appMain">
     <div id="home" class="section active-section">
-        <h1>Store Intelligence</h1>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <h1>Store Intelligence</h1>
+            <button class="quick-btn" onclick="location.reload()">🔄 Refresh Data</button>
+        </div>
+
         <div class="kpi-grid">
-            <div class="kpi-card"><small>Total Revenue</small><h2 id="revDash">₹0</h2></div>
-            <div class="kpi-card"><small>Net Profit</small><h2 id="profitDash">₹0</h2></div>
-            <div class="kpi-card"><small>GST Collected</small><h2 id="gstDash">₹0</h2></div>
+            <div class="kpi-card"><small>Total Revenue</small><h2 id="revDash" style="color:var(--primary)">₹0</h2></div>
+            <div class="kpi-card"><small>Net Profit</small><h2 id="profitDash" style="color:var(--accent)">₹0</h2></div>
+            <div class="kpi-card"><small>GST Collected</small><h2 id="gstDash" style="color:var(--india-orange)">₹0</h2></div>
             <div class="kpi-card"><small>Avg. Bill Value</small><h2 id="avgDash">₹0</h2></div>
         </div>
 
         <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:25px;">
             <div class="glass-card">
                 <h3>🏆 Best Sellers (Top 10)</h3>
-                <div id="topList"></div>
+                <div id="topList" style="margin-top:20px;"></div>
             </div>
 
             <div>
@@ -93,6 +108,10 @@
                     </div>
                     <div id="aiResponse"></div>
                 </div>
+                <div class="glass-card">
+                    <h3>📉 Critical Stock</h3>
+                    <div id="lowStockList" style="font-size: 0.85rem; color:#94a3b8;">✅ All stock healthy.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -101,15 +120,15 @@
         <div class="glass-card">
             <h2>Quick GST Billing (18%)</h2>
             <div style="display:grid; grid-template-columns: 2fr 1fr 100px; gap:10px; align-items: end;">
-                <div><label>PRODUCT</label><select id="billProd"></select></div>
-                <div><label>QTY</label><input type="number" id="billQty" value="1"></div>
+                <div><label style="font-size:0.7rem; color:#64748b">PRODUCT</label><select id="billProd"></select></div>
+                <div><label style="font-size:0.7rem; color:#64748b">QTY</label><input type="number" id="billQty" value="1"></div>
                 <button class="action-btn" onclick="addToCart()">Add</button>
             </div>
-            <div id="cartBox" style="margin-top:20px;">
+            <div id="cartBox" style="margin-top:25px; border-top:1px solid var(--border); padding-top:20px;">
                 <div id="cartItems"></div>
-                <div id="cartTotals" style="display:none; text-align:right;">
+                <div id="cartTotals" style="display:none; text-align:right; margin-top:20px;">
                     <h2 id="finalTotal">Total: ₹0</h2>
-                    <button class="action-btn" style="width:200px;" onclick="processSale()">Complete Sale</button>
+                    <button class="action-btn" style="width:200px; background:var(--accent)" onclick="processSale()">Complete Sale</button>
                 </div>
             </div>
         </div>
@@ -118,11 +137,13 @@
     <div id="inventory" class="section">
         <div class="glass-card">
             <h2>Stock Registration</h2>
-            <input id="pname" placeholder="Item Name">
-            <input id="pcost" type="number" placeholder="Cost Price (₹)">
-            <input id="psell" type="number" placeholder="Sale Price (₹)">
-            <input id="pqty" type="number" placeholder="Stock Quantity">
-            <button class="action-btn" onclick="addStock()">Add to Collection</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                <input id="pname" placeholder="Item Name">
+                <input id="pcost" type="number" placeholder="Cost Price (₹)">
+                <input id="psell" type="number" placeholder="Sale Price (₹)">
+                <input id="pqty" type="number" placeholder="Stock Quantity">
+            </div>
+            <button class="action-btn" onclick="addStock()">Add to Indian Collection</button>
         </div>
     </div>
 </main>
@@ -131,91 +152,28 @@
     let products = JSON.parse(localStorage.getItem('expo_pro_items')) || [];
     let sales = JSON.parse(localStorage.getItem('expo_pro_sales')) || [];
     let cart = [];
-    const GROQ_KEY = "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";
 
+    // AI Configuration
+    const GROQ_API_KEY = "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";
+
+    // LOGIN LOGIC
     function handleLogin() {
-        if(userInput.value === "admin" && passInput.value === "1234") {
-            loginOverlay.style.display = 'none'; appSidebar.style.display = 'block'; appMain.style.display = 'block'; updateDash();
-        } else { alert("Wrong credentials"); }
+        const u = document.getElementById('userInput').value;
+        const p = document.getElementById('passInput').value;
+        if(u === "admin" && p === "1234") {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('appSidebar').style.display = 'block';
+            document.getElementById('appMain').style.display = 'block';
+            updateDash();
+        } else { alert("Invalid Credentials"); }
     }
 
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-section');
+        event.currentTarget.classList.add('active');
         if(id === 'home') updateDash();
-        if(id === 'billing') billProd.innerHTML = '<option value="">Select Item</option>' + products.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
-    }
-
-    function updateDash() {
-        let r = 0, p = 0, g = 0;
-        sales.forEach(s => { r += s.total; p += s.profit; g += s.gst; });
-        revDash.innerText = "₹" + r.toFixed(0);
-        profitDash.innerText = "₹" + p.toFixed(0);
-        gstDash.innerText = "₹" + g.toFixed(0);
-        avgDash.innerText = "₹" + (sales.length ? (r/sales.length).toFixed(0) : 0);
-    }
-
-    // --- AI LOGIC ---
-    async function askAI() {
-        const btn = document.getElementById('aiBtn');
-        const box = document.getElementById('aiResponse');
-        btn.innerText = "⏳ Processing...";
-        box.style.display = "block";
-        box.innerText = "Connecting to India Pavilion Intelligence...";
-
-        const context = `Context: Dubai Expo. Revenue: ${revDash.innerText}, Profit: ${profitDash.innerText}, Sales Count: ${sales.length}. Give a 2-sentence advice for an Indian merchant.`;
-
-        try {
-            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    model: "llama-3.3-70b-versatile",
-                    messages: [{ role: "user", content: context }]
-                })
-            });
-            const data = await response.json();
-            box.innerText = data.choices[0].message.content;
-        } catch (e) {
-            box.innerText = "AI Offline. Check connection.";
-        } finally {
-            btn.innerText = "🤖 Ask AI";
-        }
-    }
-
-    function addStock() {
-        products.push({ name: pname.value, cost: parseFloat(pcost.value), sell: parseFloat(psell.value), qty: parseInt(pqty.value) });
-        localStorage.setItem('expo_pro_items', JSON.stringify(products));
-        alert("Stock Added!");
-    }
-
-    function addToCart() {
-        const p = products[billProd.value];
-        cart.push({ name: p.name, qty: parseInt(billQty.value), price: p.sell, cost: p.cost, subtotal: p.sell * billQty.value, id: billProd.value });
-        renderCart();
-    }
-
-    function renderCart() {
-        let total = cart.reduce((a, b) => a + b.subtotal, 0);
-        cartItems.innerHTML = cart.map(c => `<div>${c.name} x${c.qty} - ₹${c.subtotal}</div>`).join('');
-        cartTotals.style.display = 'block';
-        finalTotal.innerText = "Total: ₹" + (total * 1.18).toFixed(0);
-    }
-
-    function processSale() {
-        let t = 0, p = 0, g = 0;
-        cart.forEach(c => {
-            const gst = c.subtotal * 0.18;
-            t += (c.subtotal + gst); g += gst; p += (c.price - c.cost) * c.qty;
-            products[c.id].qty -= c.qty;
-        });
-        sales.push({ total: t, profit: p, gst: g, items: [...cart] });
-        localStorage.setItem('expo_pro_items', JSON.stringify(products));
-        localStorage.setItem('expo_pro_sales', JSON.stringify(sales));
-        cart = []; renderCart(); updateDash();
-        alert("Success!");
-    }
-</script>
-</body>
-</html>
+        if(id === 'billing') {
+            billProd.innerHTML = '<option value="">Select Item</option>' + 
+                products.map((p, i
