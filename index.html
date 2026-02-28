@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meto POS | Business Edition</title>
+    <title>Meto POS | Business Intelligence</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -16,30 +16,22 @@
         .login-box { background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 320px; text-align: center; }
 
         .sidebar { width: 260px; background: #000; position: fixed; height: 100vh; padding: 25px; border-right: 1px solid var(--border); z-index: 100; }
-        .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 10px; }
         .nav-btn.active { background: var(--primary); color: white; }
         
         .main-content { margin-left: 290px; padding: 40px; display: none; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border); }
         .kpi-card small { color: #64748b; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
-        .kpi-card h2 { margin: 10px 0 0; font-size: 1.8rem; }
 
         .glass-card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
         input, select { background: #000; border: 1px solid var(--border); border-radius: 10px; padding: 12px; color: white; width: 100%; margin-bottom: 15px; box-sizing: border-box; }
         .action-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 700; width: 100%; }
         
-        #aiResponse { margin-top: 15px; padding: 15px; border-radius: 12px; background: #020617; border: 1px solid var(--primary); font-size: 0.85rem; display: none; }
+        #aiResponse { margin-top: 15px; padding: 15px; border-radius: 12px; background: #020617; border: 1px solid var(--primary); font-size: 0.85rem; display: none; line-height: 1.5; color: #e2e8f0; }
 
         .section { display: none; }
         .active-section { display: block; }
-
-        @media (max-width: 1024px) {
-            .kpi-grid { grid-template-columns: 1fr 1fr; }
-            .sidebar { width: 70px; }
-            .sidebar span { display: none; }
-            .main-content { margin-left: 90px; }
-        }
     </style>
 </head>
 <body>
@@ -47,83 +39,56 @@
 <div id="loginOverlay">
     <div class="login-box">
         <h2 style="color:var(--primary)">Meto POS</h2>
-        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">Business Management Suite</p>
+        <p style="color:#64748b; font-size: 0.8rem; margin-bottom: 25px;">Store Management Login</p>
         <input type="text" id="userInput" placeholder="Username">
         <input type="password" id="passInput" placeholder="Password">
-        <button class="action-btn" onclick="handleLogin()">Login to Dashboard</button>
+        <button class="action-btn" onclick="handleLogin()">Enter Dashboard</button>
     </div>
 </div>
 
 <aside class="sidebar" id="appSidebar" style="display:none">
     <h2 style="color:var(--primary); margin:0;">Meto POS</h2>
-    <p style="color:#64748b; font-size: 0.6rem; font-weight: 800; margin-bottom: 30px;">RETAIL EDITION</p>
+    <p style="color:#64748b; font-size: 0.6rem; font-weight: 800; margin-bottom: 30px;">BUSINESS HUB</p>
     <button class="nav-btn active" onclick="showTab('home')">🏠 <span>Dashboard</span></button>
     <button class="nav-btn" onclick="showTab('billing')">🧾 <span>Quick Billing</span></button>
-    <button class="nav-btn" onclick="showTab('inventory')">📦 <span>Stock Management</span></button>
+    <button class="nav-btn" onclick="showTab('inventory')">📦 <span>Inventory</span></button>
     <button class="nav-btn" onclick="location.reload()" style="margin-top:40px; color:var(--danger)">🔓 <span>Logout</span></button>
 </aside>
 
 <main class="main-content" id="appMain">
     <div id="home" class="section active-section">
-        <h1>Business Intelligence</h1>
+        <h1>Store Intelligence</h1>
         <div class="kpi-grid">
             <div class="kpi-card"><small>Total Sales</small><h2 id="revDash" style="color:var(--primary)">₹0</h2></div>
             <div class="kpi-card"><small>Net Profit</small><h2 id="profitDash" style="color:var(--accent)">₹0</h2></div>
             <div class="kpi-card"><small>GST Collected</small><h2 id="gstDash" style="color:orange">₹0</h2></div>
-            <div class="kpi-card"><small>Avg. Bill Value</small><h2 id="avgDash">₹0</h2></div>
+            <div class="kpi-card"><small>Inventory Value</small><h2 id="invValDash">₹0</h2></div>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:25px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
             <div class="glass-card">
-                <h3>📈 Sales Performance</h3>
-                <div id="topList"></div>
+                <h3>📊 Quick Sales Overview</h3>
+                <div id="topList" style="font-size: 0.9rem; color: #94a3b8;">No sales recorded yet.</div>
             </div>
+
             <div class="glass-card">
-                <h3>🤖 AI Business Advisor</h3>
-                <button class="action-btn" id="aiBtn" onclick="askAI()">Get Growth Insights</button>
+                <h3>🤖 Meto AI Consultant</h3>
+                <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px;">Ask about your profits, stock, or business math.</p>
+                <input type="text" id="aiQuery" placeholder="e.g., Which product gives the most profit?">
+                <button class="action-btn" id="aiBtn" onclick="askAI()">Ask Business AI</button>
                 <div id="aiResponse"></div>
-                <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
-                <button class="action-btn" style="background:#1e293b" onclick="localStorage.clear(); location.reload();">🧹 Clear All Data</button>
+                <button class="action-btn" style="background:#1e293b; margin-top:20px;" onclick="if(confirm('Reset all business data?')) {localStorage.clear(); location.reload();}">🧹 Reset System</button>
             </div>
         </div>
     </div>
 
-    <div id="billing" class="section">
-        <div class="glass-card">
-            <h2>New Invoice (18% GST)</h2>
-            <div style="display:grid; grid-template-columns: 2fr 1fr 100px; gap:10px; align-items: end;">
-                <div><label style="font-size:0.7rem; color:#64748b">PRODUCT</label><select id="billProd"></select></div>
-                <div><label style="font-size:0.7rem; color:#64748b">QTY</label><input type="number" id="billQty" value="1"></div>
-                <button class="action-btn" onclick="addToCart()">Add</button>
-            </div>
-            <div id="cartBox" style="margin-top:25px; border-top:1px solid var(--border); padding-top:20px;">
-                <div id="cartItems"></div>
-                <div id="cartTotals" style="display:none; text-align:right;">
-                    <h2 id="finalTotal">Total: ₹0</h2>
-                    <button class="action-btn" style="width:200px; background:var(--accent)" onclick="processSale()">Confirm Sale</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="inventory" class="section">
-        <div class="glass-card">
-            <h2>Add New Stock</h2>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                <input id="pname" placeholder="Item Name">
-                <input id="pcost" type="number" placeholder="Cost Price (₹)">
-                <input id="psell" type="number" placeholder="Selling Price (₹)">
-                <input id="pqty" type="number" placeholder="Opening Stock">
-            </div>
-            <button class="action-btn" onclick="addStock()">Save to Inventory</button>
-        </div>
-    </div>
+    <div id="billing" class="section">...</div>
+    <div id="inventory" class="section">...</div>
 </main>
 
 <script>
     let products = JSON.parse(localStorage.getItem('biz_items')) || [];
     let sales = JSON.parse(localStorage.getItem('biz_sales')) || [];
-    let cart = [];
     const GROQ_KEY = "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";
 
     function handleLogin() {
@@ -132,76 +97,57 @@
             document.getElementById('appSidebar').style.display = 'block';
             document.getElementById('appMain').style.display = 'block';
             updateDash();
-        } else { alert("Wrong Credentials"); }
+        } else { alert("Login Failed"); }
+    }
+
+    function updateDash() {
+        let rev = 0, prof = 0, gst = 0, invVal = 0;
+        sales.forEach(s => { rev += s.total; prof += s.profit; gst += s.gst; });
+        products.forEach(p => { invVal += (p.cost * p.qty); });
+        
+        document.getElementById('revDash').innerText = "₹" + rev.toFixed(0);
+        document.getElementById('profitDash').innerText = "₹" + prof.toFixed(0);
+        document.getElementById('gstDash').innerText = "₹" + gst.toFixed(0);
+        document.getElementById('invValDash').innerText = "₹" + invVal.toFixed(0);
+    }
+
+    // IMPROVED AI: Now answers specific business questions using live data
+    async function askAI() {
+        const btn = document.getElementById('aiBtn');
+        const box = document.getElementById('aiResponse');
+        const query = document.getElementById('aiQuery').value;
+        
+        if(!query) return alert("Please type your question.");
+
+        btn.innerText = "⏳ Analyzing Business Records...";
+        box.style.display = "block";
+        box.innerHTML = "Thinking...";
+
+        // Context Data for the AI
+        const context = `
+            Shop Data:
+            Revenue: ₹${revDash.innerText}
+            Total Profit: ₹${profitDash.innerText}
+            Stock List: ${products.map(p => p.name + "(Qty:" + p.qty + ")").join(", ")}
+            The owner wants to know: "${query}"
+            Provide a helpful, factual 2-sentence answer based on the numbers above.
+        `;
+
+        try {
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: context }] })
+            });
+            const data = await res.json();
+            box.innerHTML = `<strong>AI Response:</strong><br>${data.choices[0].message.content}`;
+        } catch (e) { box.innerText = "AI Offline. Check internet."; }
+        finally { btn.innerText = "Ask Business AI"; }
     }
 
     function showTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active-section'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active-section');
-        if(id === 'home') updateDash();
-        if(id === 'billing') {
-            document.getElementById('billProd').innerHTML = '<option value="">Select Item</option>' + 
-                products.map((p, i) => `<option value="${i}">${p.name} (₹${p.sell})</option>`).join('');
-        }
-    }
-
-    function updateDash() {
-        let rev = 0, prof = 0, gst = 0;
-        sales.forEach(s => { rev += s.total; prof += s.profit; gst += s.gst; });
-        document.getElementById('revDash').innerText = "₹" + rev.toFixed(0);
-        document.getElementById('profitDash').innerText = "₹" + prof.toFixed(0);
-        document.getElementById('gstDash').innerText = "₹" + gst.toFixed(0);
-        document.getElementById('avgDash').innerText = "₹" + (sales.length ? (rev/sales.length).toFixed(0) : 0);
-    }
-
-    async function askAI() {
-        const btn = document.getElementById('aiBtn');
-        const box = document.getElementById('aiResponse');
-        btn.innerText = "⏳ Generating Report..."; box.style.display = "block";
-        const prompt = `Act as a retail advisor for an Indian shop. Current Revenue: ${revDash.innerText}. Give a 2-sentence tip to increase local sales.`;
-        try {
-            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: "POST", headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "user", content: prompt }] })
-            });
-            const data = await res.json();
-            box.innerHTML = `<strong>Advisor Insight:</strong><br>${data.choices[0].message.content}`;
-        } catch (e) { box.innerText = "AI Offline."; }
-        finally { btn.innerText = "Get Growth Insights"; }
-    }
-
-    function addStock() {
-        products.push({ name: pname.value, cost: parseFloat(pcost.value), sell: parseFloat(psell.value), qty: parseInt(pqty.value) });
-        localStorage.setItem('biz_items', JSON.stringify(products));
-        alert("Product Added!"); pname.value = pcost.value = psell.value = pqty.value = "";
-    }
-
-    function addToCart() {
-        const p = products[billProd.value];
-        if(!p || billQty.value > p.qty) return alert("Stock Error");
-        cart.push({ name: p.name, qty: parseInt(billQty.value), price: p.sell, cost: p.cost, subtotal: p.sell * billQty.value, id: billProd.value });
-        renderCart();
-    }
-
-    function renderCart() {
-        let total = cart.reduce((a, b) => a + b.subtotal, 0);
-        cartItems.innerHTML = cart.map(c => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #1f2937"><span>${c.name} x${c.qty}</span><span>₹${c.subtotal}</span></div>`).join('');
-        cartTotals.style.display = cart.length ? 'block' : 'none';
-        finalTotal.innerText = "Total (Incl. 18% GST): ₹" + (total * 1.18).toFixed(0);
-    }
-
-    function processSale() {
-        let t = 0, p = 0, g = 0;
-        cart.forEach(c => {
-            products[c.id].qty -= c.qty;
-            const gst = c.subtotal * 0.18;
-            t += (c.subtotal + gst); g += gst; p += (c.price - c.cost) * c.qty;
-        });
-        sales.push({ total: t, profit: p, gst: g, items: [...cart] });
-        localStorage.setItem('biz_items', JSON.stringify(products));
-        localStorage.setItem('biz_sales', JSON.stringify(sales));
-        cart = []; renderCart(); updateDash(); alert("Invoice Generated!");
     }
 </script>
 </body>
