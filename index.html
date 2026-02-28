@@ -22,13 +22,21 @@
         
         .card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid #334155; margin-bottom: 20px; }
         input, select { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; margin: 5px 0; width: 100%; box-sizing: border-box; }
-        button.action-btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; }
+        button.action-btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; }
+        button.action-btn:hover { opacity: 0.9; transform: translateY(-1px); }
         
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { text-align: left; color: #94a3b8; padding: 12px; border-bottom: 1px solid #334155; }
         td { padding: 12px; border-bottom: 1px solid #1e293b; }
         .section { display: none; }
         .active-section { display: block; }
+
+        /* Print Styles for the specific slip */
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -36,8 +44,9 @@
 <div id="loginScreen">
     <div class="login-card">
         <h1 style="color:var(--primary)">Metocart <span style="color:white">AI</span></h1>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+        <p style="color:#94a3b8; font-size: 0.9em; margin-bottom: 20px;">Merchant OS v1.0</p>
+        <input type="text" id="username" placeholder="Username" value="admin">
+        <input type="password" id="password" placeholder="Password" value="1234">
         <button class="action-btn" onclick="login()">Sign In</button>
     </div>
 </div>
@@ -59,7 +68,7 @@
             <div class="kpi-grid">
                 <div class="kpi-card"><p>Revenue</p><h2 id="rev">₹0</h2></div>
                 <div class="kpi-card"><p>Profit</p><h2 id="profit">₹0</h2></div>
-                <div class="kpi-card"><p>GST</p><h2 id="gstTotal">₹0</h2></div>
+                <div class="kpi-card"><p>GST Collected</p><h2 id="gstTotal">₹0</h2></div>
                 <div class="kpi-card"><p>Stock Value</p><h2 id="invValue">₹0</h2></div>
             </div>
         </div>
@@ -76,7 +85,7 @@
                 </div>
                 <button class="action-btn" style="margin-top:15px;" onclick="addProduct()">Add Product</button>
                 <table id="productTable">
-                    <thead><tr><th>Product</th><th>HSN</th><th>Stock</th></tr></thead>
+                    <thead><tr><th>Product</th><th>HSN</th><th>Stock</th><th>Action</th></tr></thead>
                     <tbody id="inventoryBody"></tbody>
                 </table>
             </div>
@@ -99,11 +108,20 @@
 
         <div id="billing" class="section">
             <div class="card">
-                <h2>Quick GST Billing</h2>
-                <select id="billCustomer"><option>Select Customer</option></select>
-                <select id="billProduct"><option>Select Product</option></select>
-                <input type="number" id="billQty" placeholder="Quantity">
-                <button class="action-btn" onclick="createInvoice()">Generate & Save Bill</button>
+                <h2>Quick GST Billing (18%)</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
+                    <div>
+                        <label>Customer</label>
+                        <select id="billCustomer"><option value="">Select Customer</option></select>
+                    </div>
+                    <div>
+                        <label>Product</label>
+                        <select id="billProduct"><option value="">Select Product</option></select>
+                    </div>
+                </div>
+                <input type="number" id="billQty" placeholder="Quantity to Sell">
+                <button class="action-btn" style="margin-top:10px;" onclick="createInvoice()">Generate & Save Bill</button>
+                
                 <div id="invoiceOutput" style="margin-top:20px;"></div>
             </div>
         </div>
@@ -111,10 +129,10 @@
         <div id="ai" class="section">
             <div class="card">
                 <h2>AI Growth Advisor</h2>
-                <p style="color:#94a3b8">Ask anything about your store performance.</p>
-                <input id="aiQuestion" placeholder="Example: How can I increase my profit this month?">
+                <p style="color:#94a3b8">Get instant insights based on your store's real data.</p>
+                <input id="aiQuestion" placeholder="Example: Analysis of my current stock and profit margins?">
                 <button class="action-btn" style="width:150px; margin-top:10px;" onclick="generateAI()">Ask AI</button>
-                <div id="aiOutput" style="margin-top:20px; padding:15px; background:#0f172a; border-radius:10px; line-height: 1.6;"></div>
+                <div id="aiOutput" style="margin-top:20px; padding:20px; background:#0f172a; border-radius:12px; line-height: 1.6; border: 1px solid #1e293b;"></div>
             </div>
         </div>
     </div>
@@ -125,7 +143,7 @@
     let customers = [];
     let totals = { rev: 0, profit: 0, gst: 0 };
     
-    // YOUR API KEY INTEGRATED HERE
+    // API KEY FOR TESTING
     const GROQ_API_KEY = "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";
 
     function login() {
@@ -143,21 +161,38 @@
     }
 
     function addProduct() {
-        const p = { name: pname.value, hsn: pcategory.value, cost: parseFloat(pcost.value), sell: parseFloat(psell.value), qty: parseInt(pqty.value) };
+        if(!pname.value || !pqty.value) return alert("Fill details");
+        const p = { 
+            name: pname.value, 
+            hsn: pcategory.value || "N/A", 
+            cost: parseFloat(pcost.value) || 0, 
+            sell: parseFloat(psell.value) || 0, 
+            qty: parseInt(pqty.value) || 0 
+        };
         products.push(p);
         renderInventory();
         updateLists();
         updateStats();
+        // Clear fields
+        pname.value = ''; pcost.value = ''; psell.value = ''; pqty.value = '';
     }
 
     function addCustomer() {
-        customers.push({ name: cname.value, phone: cphone.value });
+        if(!cname.value) return alert("Enter Name");
+        customers.push({ name: cname.value, phone: cphone.value || "N/A" });
         renderCustomers();
         updateLists();
+        cname.value = ''; cphone.value = '';
     }
 
     function renderInventory() {
-        inventoryBody.innerHTML = products.map(p => `<tr><td>${p.name}</td><td>${p.hsn}</td><td>${p.qty}</td></tr>`).join('');
+        inventoryBody.innerHTML = products.map((p, i) => `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.hsn}</td>
+                <td style="color: ${p.qty < 5 ? '#ef4444' : 'inherit'}">${p.qty}</td>
+                <td><button onclick="products.splice(${i},1); renderInventory(); updateLists();" style="background:none; border:none; color:#ef4444; cursor:pointer;">Delete</button></td>
+            </tr>`).join('');
     }
 
     function renderCustomers() {
@@ -165,25 +200,8 @@
     }
 
     function updateLists() {
-        billProduct.innerHTML = products.map((p, i) => `<option value="${i}">${p.name} (Stock: ${p.qty})</option>`).join('');
-        billCustomer.innerHTML = customers.map((c, i) => `<option value="${i}">${c.name}</option>`).join('');
-    }
-
-    function createInvoice() {
-        const p = products[billProduct.value];
-        const q = parseInt(billQty.value);
-        if(!p || q > p.qty) return alert("Check stock quantity");
-        
-        const sub = p.sell * q;
-        const gst = sub * 0.18;
-        p.qty -= q;
-        totals.rev += (sub + gst);
-        totals.gst += gst;
-        totals.profit += (p.sell - p.cost) * q;
-        
-        updateStats();
-        renderInventory();
-        invoiceOutput.innerHTML = `<div style="padding:15px; border:1px solid var(--accent); border-radius:12px;"><b>Bill Generated</b><br>Amount: ₹${(sub+gst).toFixed(2)} (Incl. 18% GST)</div>`;
+        billProduct.innerHTML = '<option value="">Select Product</option>' + products.map((p, i) => `<option value="${i}">${p.name} (Stock: ${p.qty})</option>`).join('');
+        billCustomer.innerHTML = '<option value="">Select Customer</option>' + customers.map((c, i) => `<option value="${i}">${c.name}</option>`).join('');
     }
 
     function updateStats() {
@@ -193,49 +211,108 @@
         invValue.innerText = "₹" + products.reduce((acc, p) => acc + (p.cost * p.qty), 0).toFixed(0);
     }
 
-    // REAL AI INTEGRATION WITH GROQ
+    // UPDATED: BILLING + INVOICE SLIP LOGIC
+    function createInvoice() {
+        const pIndex = billProduct.value;
+        const cIndex = billCustomer.value;
+        
+        if(pIndex === "" || cIndex === "") return alert("Please select both customer and product");
+
+        const p = products[pIndex];
+        const c = customers[cIndex];
+        const q = parseInt(billQty.value);
+
+        if(!p || q > p.qty || q <= 0) return alert("Invalid quantity or out of stock");
+        
+        const subtotal = p.sell * q;
+        const gstAmount = subtotal * 0.18; 
+        const totalAmount = subtotal + gstAmount;
+
+        // Financial Updates
+        p.qty -= q;
+        totals.rev += totalAmount;
+        totals.gst += gstAmount;
+        totals.profit += (p.sell - p.cost) * q;
+        
+        updateStats();
+        renderInventory();
+        updateLists();
+
+        // UI Confirmation + Print Button
+        invoiceOutput.innerHTML = `
+            <div style="padding:20px; border:2px solid var(--accent); border-radius:12px; background: rgba(16, 185, 129, 0.05); text-align:center;">
+                <h3 style="margin-top:0; color:var(--accent);">🎉 Transaction Successful</h3>
+                <p>Invoice for <b>${c.name}</b>: ₹${totalAmount.toFixed(2)}</p>
+                <button class="action-btn" style="background:#10b981; width:auto;" 
+                    onclick="printSlip('${c.name}', '${c.phone}', '${p.name}', ${q}, ${p.sell}, ${gstAmount}, ${totalAmount})">
+                    🖨️ Print Invoice Slip
+                </button>
+            </div>`;
+    }
+
+    function printSlip(custName, custPhone, prodName, qty, rate, gst, total) {
+        const printWindow = window.open('', '_blank', 'width=450,height=600');
+        const invNo = "METO-" + Math.floor(Math.random() * 9999);
+        const date = new Date().toLocaleString();
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Invoice ${invNo}</title>
+                <style>
+                    body { font-family: 'Courier New', monospace; padding: 20px; line-height: 1.2; font-size: 14px; }
+                    .center { text-align: center; }
+                    .dashed { border-bottom: 1px dashed #000; margin: 10px 0; }
+                    .row { display: flex; justify-content: space-between; margin: 5px 0; }
+                    .bold { font-weight: bold; }
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                <div class="center">
+                    <h2 style="margin:0">METOCART AI</h2>
+                    <p>Smart Retail Solutions<br>GSTIN: 27METO9988X1Z1</p>
+                </div>
+                <div class="dashed"></div>
+                <p><b>INV NO:</b> ${invNo}<br><b>DATE:</b> ${date}</p>
+                <p><b>CUSTOMER:</b> ${custName}<br><b>PHONE:</b> ${custPhone}</p>
+                <div class="dashed"></div>
+                <div class="row bold"><span>ITEM</span><span>QTY</span><span>TOTAL</span></div>
+                <div class="row"><span>${prodName} (@${rate})</span><span>${qty}</span><span>${(qty*rate).toFixed(2)}</span></div>
+                <div class="dashed"></div>
+                <div class="row"><span>Taxable Value:</span><span>₹${(qty*rate).toFixed(2)}</span></div>
+                <div class="row"><span>GST (18%):</span><span>₹${gst.toFixed(2)}</span></div>
+                <div class="row bold" style="font-size:16px;"><span>GRAND TOTAL:</span><span>₹${total.toFixed(2)}</span></div>
+                <div class="dashed"></div>
+                <p class="center" style="margin-top:20px;">~ Thank You! ~<br>Powered by Metocart AI</p>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+
     async function generateAI() {
         const aiOutput = document.getElementById('aiOutput');
         const question = document.getElementById('aiQuestion').value;
+        if (!question) return alert("Ask a question first.");
 
-        if (!question) {
-            alert("Please enter a question for the advisor.");
-            return;
-        }
-
-        aiOutput.innerHTML = "✨ Metocart AI is analyzing your store data...";
+        aiOutput.innerHTML = "⏳ Metocart AI is crunching the numbers...";
 
         try {
             const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${GROQ_API_KEY}`,
-                    "Content-Type": "application/json"
-                },
+                headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
                 body: JSON.stringify({
                     model: "llama-3.3-70b-versatile",
                     messages: [
-                        {
-                            role: "system", 
-                            content: "You are the Metocart AI Business Advisor. Provide professional, concise retail advice for the Indian market. Use the provided business data to be specific."
-                        },
-                        {
-                            role: "user", 
-                            content: `Store Data: Revenue ₹${totals.rev}, Profit ₹${totals.profit}, GST Collected ₹${totals.gst}, Customer Count: ${customers.length}, Inventory List: ${JSON.stringify(products)}. Question: ${question}`
-                        }
+                        { role: "system", content: "You are the Metocart AI Business Advisor. Provide professional, short, bulleted retail advice for the Indian market. Use the data provided." },
+                        { role: "user", content: `Data: Revenue ₹${totals.rev}, Profit ₹${totals.profit}, GST ₹${totals.gst}, Products: ${JSON.stringify(products)}. Question: ${question}` }
                     ]
                 })
             });
-
             const data = await response.json();
-            const advice = data.choices[0].message.content;
-            
-            // Render the response and handle new lines
-            aiOutput.innerHTML = `<b>Metocart Insight:</b><br>${advice.replace(/\n/g, "<br>")}`;
-
-        } catch (error) {
-            console.error("AI Error:", error);
-            aiOutput.innerHTML = "<span style='color:#ef4444'>⚠️ Connection error. Please check your internet or API key.</span>";
+            aiOutput.innerHTML = `<b>AI Insights:</b><br>${data.choices[0].message.content.replace(/\n/g, "<br>")}`;
+        } catch (e) {
+            aiOutput.innerHTML = "<span style='color:#ef4444'>AI Error. Check Connection.</span>";
         }
     }
 </script>
