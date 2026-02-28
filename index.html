@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Metocart AI</title>
+    <title>Me2Cart AI - Business Assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
             margin: 0;
             padding: 0;
@@ -18,11 +18,13 @@
 
         .container {
             width: 95%;
-            max-width: 700px;
+            max-width: 750px;
             background: #ffffff;
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         h1 {
@@ -31,7 +33,8 @@
         }
 
         #chat-box {
-            height: 400px;
+            flex: 1;
+            height: 420px;
             overflow-y: auto;
             border-radius: 10px;
             padding: 15px;
@@ -42,13 +45,28 @@
         .user {
             text-align: right;
             margin: 10px 0;
-            color: #007bff;
+        }
+
+        .user span {
+            background: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            display: inline-block;
+            max-width: 75%;
         }
 
         .bot {
             text-align: left;
             margin: 10px 0;
-            color: #222;
+        }
+
+        .bot span {
+            background: #e9ecef;
+            padding: 10px 12px;
+            border-radius: 15px;
+            display: inline-block;
+            max-width: 80%;
         }
 
         .input-area {
@@ -60,6 +78,7 @@
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
+            font-size: 14px;
         }
 
         button {
@@ -81,7 +100,7 @@
 <body>
 
 <div class="container">
-    <h1>Metocart AI 🚀</h1>
+    <h1>Me2Cart AI 🚀</h1>
 
     <div id="chat-box"></div>
 
@@ -93,7 +112,7 @@
 </div>
 
 <script>
-const API_KEY = "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";  // <-- Put your key here
+const API_KEY = "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";   // ⚠ Replace with your Groq API key
 
 async function askAI() {
     const input = document.getElementById("question");
@@ -101,11 +120,23 @@ async function askAI() {
     const question = input.value.trim();
     if (!question) return;
 
-    chat.innerHTML += `<div class="user"><b>You:</b> ${question}</div>`;
+    chat.innerHTML += `
+        <div class="user">
+            <span>${question}</span>
+        </div>
+    `;
+
     input.value = "";
 
-    chat.innerHTML += `<div class="bot">Thinking...</div>`;
-    chat.scrollTop = chat.scrollHeight;
+    const loaderId = "loader-" + Date.now();
+
+    chat.innerHTML += `
+        <div class="bot" id="${loaderId}">
+            <span><i>Me2Cart AI is thinking...</i></span>
+        </div>
+    `;
+
+    chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" });
 
     try {
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -117,25 +148,44 @@ async function askAI() {
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
                 messages: [
-                    { role: "system", content: "You are a business expert AI assistant." },
+                    { role: "system", content: "You are a professional business consultant AI. Give clear structured answers with headings and line breaks." },
                     { role: "user", content: question }
                 ]
             })
         });
 
         const data = await response.json();
-        chat.innerHTML = chat.innerHTML.replace("Thinking...", "");
+
+        document.getElementById(loaderId)?.remove();
 
         if (!response.ok) {
-            chat.innerHTML += `<div class="bot">Error: ${JSON.stringify(data)}</div>`;
+            chat.innerHTML += `
+                <div class="bot">
+                    <span>Error: ${JSON.stringify(data)}</span>
+                </div>
+            `;
             return;
         }
 
-        chat.innerHTML += `<div class="bot"><b>Metocart AI:</b> ${data.choices[0].message.content}</div>`;
-        chat.scrollTop = chat.scrollHeight;
+        const formatted = data.choices[0].message.content
+            .replace(/\n/g, "<br>")
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+        chat.innerHTML += `
+            <div class="bot">
+                <span>${formatted}</span>
+            </div>
+        `;
+
+        chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" });
 
     } catch (err) {
-        chat.innerHTML += `<div class="bot">Network error.</div>`;
+        document.getElementById(loaderId)?.remove();
+        chat.innerHTML += `
+            <div class="bot">
+                <span>Network error. Please try again.</span>
+            </div>
+        `;
     }
 }
 
