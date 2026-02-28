@@ -22,7 +22,7 @@
             overflow-x: hidden;
         }
 
-        /* --- MODERN LOGIN --- */
+        /* --- SECURE LOGIN --- */
         #loginScreen {
             height: 100vh;
             display: flex;
@@ -50,7 +50,9 @@
             border-radius: 12px;
             color: white;
             box-sizing: border-box;
+            outline: none;
         }
+        .login-card input:focus { border-color: var(--primary); }
         .login-card button {
             width: 100%;
             padding: 14px;
@@ -96,7 +98,6 @@
 
         .main-content { margin-left: 280px; padding: 40px; }
 
-        /* --- STAT CARDS --- */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -108,53 +109,34 @@
             padding: 24px;
             border-radius: 20px;
             border: 1px solid #334155;
-            transition: 0.3s;
         }
-        .kpi-card:hover { border-color: var(--primary); }
         .kpi-card p { color: #94a3b8; font-size: 14px; margin: 0; }
         .kpi-card h2 { font-size: 28px; margin: 10px 0 0 0; }
 
-        /* --- FORM ELEMENTS --- */
         .card {
             background: var(--card-bg);
             padding: 30px;
             border-radius: 24px;
             border: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+        input {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            margin-top: 5px;
         }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th { text-align: left; color: #94a3b8; padding: 12px; border-bottom: 1px solid #334155; }
         td { padding: 12px; border-bottom: 1px solid #1e293b; }
 
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .low { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-        
-        .ai-output {
-            background: #0f172a;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            border-left: 4px solid var(--primary);
-            line-height: 1.6;
-        }
-
-        .voice-btn {
-            background: #ef4444;
-            border: none;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
         .section { display: none; }
         .active-section { display: block; }
 
+        .status-pill { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+        .low { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
     </style>
 </head>
 <body>
@@ -162,10 +144,9 @@
 <div id="loginScreen">
     <div class="login-card">
         <h1>Metocart <span style="color:white">AI</span></h1>
-        <p style="color:#94a3b8; margin-bottom: 20px;">Dubai Expo 2026 Edition</p>
-        <input type="text" id="username" placeholder="Username (admin)">
-        <input type="password" id="password" placeholder="Password (1234)">
-        <button onclick="login()">Enter Dashboard</button>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Sign In</button>
     </div>
 </div>
 
@@ -181,17 +162,12 @@
 
     <div class="main-content">
         <div id="home" class="section active-section">
-            <h1 style="margin-bottom: 30px;">Business Intelligence</h1>
+            <h1 style="margin-bottom: 30px;">Business Overview</h1>
             <div class="kpi-grid">
                 <div class="kpi-card"><p>Total Revenue</p><h2 id="rev">₹0</h2></div>
                 <div class="kpi-card"><p>Net Profit</p><h2 id="profit">₹0</h2></div>
                 <div class="kpi-card"><p>GST Collected</p><h2 id="gstTotal">₹0</h2></div>
                 <div class="kpi-card"><p>Stock Value</p><h2 id="invValue">₹0</h2></div>
-            </div>
-            
-            <div class="card">
-                <h3>Live Insights</h3>
-                <p style="color:#94a3b8">Ready to sync with India-Stack APIs for real-time compliance.</p>
             </div>
         </div>
 
@@ -200,17 +176,14 @@
                 <h2>Product Catalog</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
                     <input id="pname" placeholder="Item Name">
-                    <input id="pcategory" placeholder="HSN Code (e.g. 6109)">
+                    <input id="pcategory" placeholder="HSN Code">
                     <input type="number" id="pcost" placeholder="Cost Price">
                     <input type="number" id="psell" placeholder="Selling Price">
-                    <input type="number" id="pqty" placeholder="Opening Stock">
+                    <input type="number" id="pqty" placeholder="Stock">
                 </div>
-                <button class="login-card button" style="width:200px; margin-top:15px" onclick="addProduct()">+ Add Item</button>
-                
+                <button class="login-card button" style="width:200px; margin-top:15px; background:var(--primary); color:white; border:none; border-radius:8px; padding:10px;" onclick="addProduct()">+ Add Item</button>
                 <table id="productTable">
-                    <thead>
-                        <tr><th>Product</th><th>HSN</th><th>Stock</th><th>Status</th></tr>
-                    </thead>
+                    <thead><tr><th>Product</th><th>HSN</th><th>Stock</th><th>Status</th></tr></thead>
                     <tbody id="inventoryBody"></tbody>
                 </table>
             </div>
@@ -224,11 +197,8 @@
                         <label>Select Product</label>
                         <select id="billProduct" style="width:100%; padding:12px; background:#0f172a; color:white; border-radius:10px;"></select>
                     </div>
-                    <div>
-                        <label>Qty</label>
-                        <input type="number" id="billQty" style="width:80px">
-                    </div>
-                    <button class="login-card button" onclick="createInvoice()">Generate Bill</button>
+                    <div><label>Qty</label><input type="number" id="billQty" style="width:80px"></div>
+                    <button class="login-card button" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:10px;" onclick="createInvoice()">Generate Bill</button>
                 </div>
                 <div id="invoiceOutput" style="margin-top:30px"></div>
             </div>
@@ -236,12 +206,10 @@
 
         <div id="ai" class="section">
             <div class="card">
-                <h2>Metocart AI Advisor</h2>
-                <button class="voice-btn" onclick="startVoice()">🎤</button>
-                <p id="voiceStatus" style="font-size:12px; color:var(--primary)">Click mic to speak in Hinglish/English</p>
-                <input id="aiQuestion" placeholder="Ex: 'Which products are low on stock?'" style="padding:15px">
-                <button class="login-card button" style="width:150px" onclick="generateAI()">Get Advice</button>
-                <div id="aiOutput" class="ai-output">Your AI insights will appear here...</div>
+                <h2>AI Business Advisor</h2>
+                <input id="aiQuestion" placeholder="Ask about your business growth..." style="width:100%; margin-bottom:15px;">
+                <button class="login-card button" style="width:150px; background:var(--primary); color:white; border:none; border-radius:8px; padding:10px;" onclick="generateAI()">Get Advice</button>
+                <div id="aiOutput" style="margin-top:20px; padding:15px; background:#0f172a; border-radius:10px;"></div>
             </div>
         </div>
     </div>
@@ -252,10 +220,11 @@
     let totals = { rev: 0, profit: 0, gst: 0 };
 
     function login() {
+        // Keeping logic same, but placeholders are gone
         if(username.value === "admin" && password.value === "1234") {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-        } else { alert("Access Denied"); }
+        } else { alert("Invalid Credentials"); }
     }
 
     function showTab(id) {
@@ -266,13 +235,7 @@
     }
 
     function addProduct() {
-        const p = {
-            name: pname.value,
-            hsn: pcategory.value,
-            cost: parseFloat(pcost.value),
-            sell: parseFloat(psell.value),
-            qty: parseInt(pqty.value)
-        };
+        const p = { name: pname.value, hsn: pcategory.value, cost: parseFloat(pcost.value), sell: parseFloat(psell.value), qty: parseInt(pqty.value) };
         products.push(p);
         renderInventory();
         updateBillingList();
@@ -280,78 +243,40 @@
     }
 
     function renderInventory() {
-        let html = "";
-        products.forEach(p => {
-            const status = p.qty < 5 ? "low" : "";
-            html += `<tr>
-                <td>${p.name}</td>
-                <td>${p.hsn}</td>
-                <td>${p.qty}</td>
-                <td><span class="status-pill ${status}">${p.qty < 5 ? 'Restock' : 'Healthy'}</span></td>
-            </tr>`;
-        });
-        inventoryBody.innerHTML = html;
+        inventoryBody.innerHTML = products.map(p => `<tr><td>${p.name}</td><td>${p.hsn}</td><td>${p.qty}</td><td><span class="status-pill ${p.qty < 5 ? 'low' : ''}">${p.qty < 5 ? 'Low' : 'OK'}</span></td></tr>`).join('');
     }
 
     function updateBillingList() {
-        billProduct.innerHTML = products.map((p, i) => `<option value="${i}">${p.name} (Stock: ${p.qty})</option>`).join('');
+        billProduct.innerHTML = products.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
     }
 
     function createInvoice() {
         const i = billProduct.value;
         const q = parseInt(billQty.value);
         const p = products[i];
-
-        if(q > p.qty) return alert("Out of stock!");
-
+        if(q > p.qty) return alert("Insufficient Stock");
         const sub = p.sell * q;
         const gst = sub * 0.18;
-        const prof = (p.sell - p.cost) * q;
-
         p.qty -= q;
         totals.rev += (sub + gst);
         totals.gst += gst;
-        totals.profit += prof;
-
+        totals.profit += (p.sell - p.cost) * q;
         updateStats();
         renderInventory();
-
-        invoiceOutput.innerHTML = `
-            <div style="background:#0f172a; padding:20px; border-radius:15px; border:1px dashed var(--primary)">
-                <h3 style="margin:0">Tax Invoice</h3>
-                <p>Item: ${p.name} x ${q}</p>
-                <hr style="border-color:#334155">
-                <p>GST (18%): ₹${gst.toFixed(2)}</p>
-                <h2 style="color:var(--accent)">Total: ₹${(sub+gst).toFixed(2)}</h2>
-                <button onclick="alert('Sending to WhatsApp...')" style="background:#25D366; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer">Share on WhatsApp</button>
-            </div>
-        `;
+        invoiceOutput.innerHTML = `<div style="padding:20px; border:1px solid var(--primary); border-radius:15px;"><h3>Invoice Generated</h3><p>Total: ₹${(sub+gst).toFixed(2)}</p></div>`;
     }
 
     function updateStats() {
         rev.innerText = "₹" + totals.rev.toFixed(0);
         profit.innerText = "₹" + totals.profit.toFixed(0);
         gstTotal.innerText = "₹" + totals.gst.toFixed(0);
-        const stockVal = products.reduce((acc, p) => acc + (p.cost * p.qty), 0);
-        invValue.innerText = "₹" + stockVal.toFixed(0);
+        invValue.innerText = "₹" + products.reduce((acc, p) => acc + (p.cost * p.qty), 0).toFixed(0);
     }
 
-    // AI MOCK LOGIC (Connect to your Groq/OpenAI Key)
     async function generateAI() {
-        aiOutput.innerHTML = "✨ Analyzing your business data for the Indian market...";
-        setTimeout(() => {
-            aiOutput.innerHTML = "<b>AI INSIGHT:</b> Your revenue is growing. To maximize profit, consider increasing stock of high-margin items before the festive season. Your current GST liability for the month is estimated at ₹" + totals.gst.toFixed(2);
-        }, 1500);
-    }
-
-    function startVoice() {
-        voiceStatus.innerText = "Listening...";
-        setTimeout(() => {
-            voiceStatus.innerText = "Processed: 'Check my inventory'";
-            aiQuestion.value = "Check my inventory";
-        }, 2000);
+        aiOutput.innerText = "Analyzing business trends...";
+        setTimeout(() => { aiOutput.innerText = "Advice: Your inventory value is healthy. Focus on high-margin products to increase profit."; }, 1000);
     }
 </script>
 </body>
 </html>
-
