@@ -28,10 +28,6 @@ body{
   width:350px;
   box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
-.login-card h2{
-  text-align:center;
-  margin-bottom:20px;
-}
 .login-card input{
   width:100%;
   padding:12px;
@@ -61,9 +57,7 @@ body{
   padding:25px;
   box-shadow:2px 0 15px rgba(0,0,0,0.05);
 }
-.sidebar h2{
-  color:#0066ff;
-}
+.sidebar h2{color:#0066ff;}
 .sidebar button{
   width:100%;
   margin:10px 0;
@@ -150,6 +144,7 @@ th,td{
 }
 </style>
 </head>
+
 <body>
 
 <!-- LOGIN -->
@@ -170,6 +165,7 @@ th,td{
   <button onclick="showSection('home')">Dashboard</button>
   <button onclick="showSection('inventory')">Inventory</button>
   <button onclick="showSection('billing')">Billing</button>
+  <button onclick="showSection('calculator')">Calculations</button>
   <button onclick="showSection('ai')">AI Advisor</button>
   <button onclick="logout()">Logout</button>
 </div>
@@ -193,6 +189,7 @@ th,td{
   <div class="card">
     <h2>Inventory Manager</h2>
     <input type="text" id="pname" placeholder="Product Name">
+    <input type="text" id="pcategory" placeholder="Category (Pipes, Faucets...)">
     <input type="number" id="pcost" placeholder="Cost Price">
     <input type="number" id="psell" placeholder="Selling Price">
     <input type="number" id="pqty" placeholder="Quantity">
@@ -212,11 +209,42 @@ th,td{
   </div>
 </div>
 
+<!-- CALCULATOR HUB -->
+<div id="calculator" class="section">
+  <div class="card">
+    <h2>Business Calculation Hub</h2>
+
+    <h3>Monthly Expense Calculator</h3>
+    <input type="number" id="rent" placeholder="Rent">
+    <input type="number" id="electricity" placeholder="Electricity">
+    <input type="number" id="salary" placeholder="Salary">
+    <input type="number" id="transport" placeholder="Transport">
+    <button class="primary" onclick="calculateExpenses()">Calculate</button>
+    <p id="expenseResult"></p>
+
+    <hr>
+
+    <h3>Margin Calculator</h3>
+    <input type="number" id="buyPrice" placeholder="Buying Price">
+    <input type="number" id="sellPriceMargin" placeholder="Selling Price">
+    <button class="primary" onclick="calculateMargin()">Calculate</button>
+    <p id="marginResult"></p>
+
+    <hr>
+
+    <h3>Discount Calculator</h3>
+    <input type="number" id="bulkPrice" placeholder="Total Price">
+    <input type="number" id="discountPercent" placeholder="Discount %">
+    <button class="primary" onclick="calculateDiscount()">Calculate</button>
+    <p id="discountResult"></p>
+  </div>
+</div>
+
 <!-- AI -->
 <div id="ai" class="section">
   <div class="card">
     <h2>AI Business Advisor</h2>
-    <input type="text" id="idea" placeholder="Ask about profit, pricing, stock strategy...">
+    <input type="text" id="idea" placeholder="Ask about stock strategy, pricing...">
     <button class="primary" onclick="generateAI()">Ask AI</button>
     <div id="aiOutput"></div>
   </div>
@@ -248,7 +276,9 @@ function showSection(id){
 
 function addProduct(){
   products.push({
+    id:products.length+1,
     name:pname.value,
+    category:pcategory.value,
     cost:parseFloat(pcost.value),
     sell:parseFloat(psell.value),
     qty:parseInt(pqty.value)
@@ -258,15 +288,20 @@ function addProduct(){
 }
 
 function renderProducts(){
-  let html="<table><tr><th>Name</th><th>Stock</th><th>Sell</th></tr>";
+  let totalUnits=0;
+  let html="<table><tr><th>ID</th><th>Name</th><th>Category</th><th>Stock</th><th>Sell</th></tr>";
   products.forEach(p=>{
+    totalUnits+=p.qty;
     html+=`<tr>
+      <td>${p.id}</td>
       <td>${p.name}</td>
+      <td>${p.category}</td>
       <td class="${p.qty<5?'low-stock':''}">${p.qty}</td>
       <td>₹${p.sell}</td>
     </tr>`;
   });
   html+="</table>";
+  html+=`<p><strong>Total Units: ${totalUnits}</strong></p>`;
   productTable.innerHTML=html;
 }
 
@@ -311,12 +346,35 @@ function updateDashboard(){
   lowStockCount.innerText=low;
 }
 
+function calculateExpenses(){
+  let total =
+    parseFloat(rent.value||0)+
+    parseFloat(electricity.value||0)+
+    parseFloat(salary.value||0)+
+    parseFloat(transport.value||0);
+
+  expenseResult.innerHTML="Total Monthly Expenses: ₹"+total.toFixed(2);
+}
+
+function calculateMargin(){
+  let buy=parseFloat(buyPrice.value||0);
+  let sell=parseFloat(sellPriceMargin.value||0);
+  let margin=((sell-buy)/buy)*100;
+  marginResult.innerHTML="Profit: ₹"+(sell-buy).toFixed(2)+" | Margin: "+margin.toFixed(2)+"%";
+}
+
+function calculateDiscount(){
+  let price=parseFloat(bulkPrice.value||0);
+  let discount=parseFloat(discountPercent.value||0);
+  let final=price-(price*discount/100);
+  discountResult.innerHTML="Final Price: ₹"+final.toFixed(2);
+}
+
 const totalRevenueEl=document.getElementById("totalRevenue");
 const totalProfitEl=document.getElementById("totalProfit");
 
 async function generateAI(){
   aiOutput.innerHTML="Thinking...";
-
   const res=await fetch("https://api.groq.com/openai/v1/chat/completions",{
     method:"POST",
     headers:{
@@ -326,12 +384,11 @@ async function generateAI(){
     body:JSON.stringify({
       model:"llama-3.1-8b-instant",
       messages:[
-        {role:"system",content:"You are a smart retail AI advisor. You can analyze inventory and suggest growth strategies."},
+        {role:"system",content:"You are a smart retail AI advisor."},
         {role:"user",content:`Inventory: ${JSON.stringify(products)}. Question: ${idea.value}`}
       ]
     })
   });
-
   const data=await res.json();
   aiOutput.innerHTML=data.choices[0].message.content.replace(/\n/g,"<br>");
 }
