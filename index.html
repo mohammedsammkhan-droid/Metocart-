@@ -3,190 +3,243 @@
 <head>
 <title>Metocart AI - Business Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root{
-  --bg:#0f2027;
-  --card:rgba(255,255,255,0.08);
-  --text:#fff;
-  --accent:#00c6ff;
-}
-
-.light{
-  --bg:#f4f6f9;
-  --card:#ffffff;
-  --text:#111;
-  --accent:#007bff;
-}
-
+*{box-sizing:border-box;}
 body{
   margin:0;
-  font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:var(--text);
-  transition:0.3s;
-}
-
-.light{
-  background:#f4f6f9;
-  color:#111;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px;
-}
-
-.card{
-  background:var(--card);
-  padding:20px;
-  border-radius:15px;
-  margin-bottom:25px;
-  backdrop-filter:blur(12px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.3);
-}
-
-input{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:none;
-  margin:8px 0;
-}
-
-button{
-  padding:10px 18px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  background:var(--accent);
+  font-family:'Inter',sans-serif;
+  background:#0e1117;
   color:#fff;
-  font-weight:600;
-  margin-top:5px;
 }
 
+.dashboard{
+  display:flex;
+  min-height:100vh;
+}
+
+/* Sidebar */
+.sidebar{
+  width:240px;
+  background:#161b22;
+  padding:25px;
+  border-right:1px solid #222;
+}
+
+.sidebar h2{
+  font-size:20px;
+  margin-bottom:30px;
+  color:#00c6ff;
+}
+
+.sidebar a{
+  display:block;
+  padding:12px;
+  margin-bottom:10px;
+  text-decoration:none;
+  color:#ccc;
+  border-radius:8px;
+  transition:0.2s;
+}
+
+.sidebar a:hover{
+  background:#00c6ff;
+  color:#000;
+}
+
+/* Main */
+.main{
+  flex:1;
+  padding:40px;
+}
+
+/* Header */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+}
+
+.header h1{
+  font-size:26px;
+}
+
+/* KPI */
 .kpi-container{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-  gap:15px;
-  margin-bottom:25px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px;
+  margin-bottom:35px;
 }
 
 .kpi{
-  background:var(--card);
-  padding:15px;
-  border-radius:10px;
+  background:#161b22;
+  padding:20px;
+  border-radius:12px;
   text-align:center;
+  transition:0.3s;
 }
 
-.section-title{
-  margin-bottom:15px;
+.kpi:hover{
+  transform:translateY(-4px);
+  background:#1f2937;
 }
 
-#output, #businessAdvice{
-  white-space:pre-wrap;
+.kpi h3{
+  margin:0;
+  font-size:22px;
+  color:#00c6ff;
+}
+
+/* Cards */
+.card{
+  background:#161b22;
+  padding:25px;
+  border-radius:14px;
+  margin-bottom:30px;
+}
+
+.card h2{
+  margin-top:0;
+  margin-bottom:20px;
+}
+
+/* Inputs */
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#0e1117;
+  color:#fff;
+}
+
+button{
+  padding:10px 16px;
+  background:#00c6ff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+  margin-top:8px;
+  transition:0.2s;
+}
+
+button:hover{
+  background:#009ed6;
+}
+
+/* Output */
+.output-box{
+  background:#0e1117;
+  padding:15px;
+  border-radius:8px;
+  margin-top:15px;
   line-height:1.6;
+  border:1px solid #222;
+}
+
+/* Table */
+table{
+  width:100%;
+  border-collapse:collapse;
   margin-top:15px;
 }
 
-.toggle{
-  text-align:right;
-  cursor:pointer;
-  margin-bottom:20px;
+th,td{
+  padding:10px;
+  border-bottom:1px solid #333;
+}
+
+th{
+  text-align:left;
+  color:#00c6ff;
+}
+
+.delete-btn{
+  background:#ff4b2b;
+}
+
+.delete-btn:hover{
+  background:#e13b1d;
+}
+
+@media(max-width:900px){
+  .dashboard{flex-direction:column;}
+  .sidebar{width:100%;display:flex;overflow-x:auto;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="dashboard">
 
-<div class="toggle" onclick="toggleTheme()">🌙 Toggle Mode</div>
+<div class="sidebar">
+  <h2>🚀 Metocart AI</h2>
+  <a href="#">Dashboard</a>
+  <a href="#">Business Plan</a>
+  <a href="#">Inventory</a>
+  <a href="#">AI Advice</a>
+</div>
 
-<h1>🚀 Metocart AI - Business Intelligence Dashboard</h1>
+<div class="main">
 
-<!-- KPI -->
+<div class="header">
+  <h1>Business Intelligence Dashboard</h1>
+</div>
+
 <div class="kpi-container">
   <div class="kpi"><h3 id="rev">₹0</h3><p>Revenue</p></div>
   <div class="kpi"><h3 id="exp">₹0</h3><p>Expenses</p></div>
   <div class="kpi"><h3 id="profit">₹0</h3><p>Profit</p></div>
-  <div class="kpi"><h3 id="breakeven">0</h3><p>Break-even (Months)</p></div>
+  <div class="kpi"><h3 id="breakeven">0</h3><p>Break-even</p></div>
 </div>
 
-<!-- BUSINESS CONTROL SECTION -->
 <div class="card">
-  <h2 class="section-title">📊 Business Control Center</h2>
-
-  <h3>Business Plan Generator</h3>
+  <h2>📊 AI Business Plan Generator</h2>
   <input type="text" id="idea" placeholder="Enter Business Idea">
   <input type="number" id="budget" placeholder="Enter Budget (₹)">
-  <button onclick="generatePlan()">Generate AI Business Plan</button>
+  <button onclick="generatePlan()">Generate Plan</button>
+  <div id="output" class="output-box"></div>
+</div>
 
-  <h3>Profit Calculator</h3>
+<div class="card">
+  <h2>💰 Profit Calculator</h2>
   <input type="number" id="investment" placeholder="Initial Investment">
   <input type="number" id="monthlyRevenue" placeholder="Monthly Revenue">
   <input type="number" id="monthlyCost" placeholder="Monthly Cost">
-  <button onclick="calculateProfit()">Calculate Profit</button>
-
-  <div id="output"></div>
+  <button onclick="calculateProfit()">Calculate</button>
 </div>
 
-<!-- CHART -->
 <div class="card">
-  <h2>📈 Revenue vs Expense</h2>
-  <canvas id="financeChart"></canvas>
-</div>
-
-<!-- BUSINESS PROFILE & INVENTORY -->
-<div class="card">
-  <h2>🏢 Business Profile & Inventory Manager</h2>
-
-  <input type="text" id="bizName" placeholder="Business Name">
-  <input type="text" id="industry" placeholder="Industry Type">
-  <input type="number" id="bizRevenue" placeholder="Monthly Revenue">
-  <input type="number" id="bizExpense" placeholder="Monthly Expense">
-
-  <h3>📦 Add Product</h3>
+  <h2>📦 Inventory Manager</h2>
   <input type="text" id="productName" placeholder="Product Name">
   <input type="number" id="costPrice" placeholder="Cost Price">
   <input type="number" id="sellPrice" placeholder="Selling Price">
   <input type="number" id="quantity" placeholder="Quantity">
   <button onclick="addProduct()">Add Product</button>
-
   <div id="productList"></div>
-
-  <button onclick="saveBusinessData()">Save Business Data</button>
-  <button onclick="generateAdvice()">Get AI Business Advice</button>
-
-  <div id="businessAdvice"></div>
 </div>
 
+</div>
 </div>
 
 <script>
-const API_KEY = "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";
+const API_KEY="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";
 
-let products = [];
-
-function toggleTheme(){
-  document.body.classList.toggle("light");
-}
+let products=[];
 
 async function generatePlan(){
   const idea=document.getElementById("idea").value;
   const budget=document.getElementById("budget").value;
-
-  if(!idea || !budget){
-    alert("Enter idea & budget");
-    return;
-  }
-
   document.getElementById("output").innerHTML="Generating...";
 
-  const response = await fetch("https://api.groq.com/openai/v1/chat/completions",{
+  const response=await fetch("https://api.groq.com/openai/v1/chat/completions",{
     method:"POST",
     headers:{
       "Authorization":"Bearer "+API_KEY,
@@ -196,15 +249,13 @@ async function generatePlan(){
       model:"llama-3.1-8b-instant",
       messages:[
         {role:"system",content:"You are an expert startup advisor."},
-        {role:"user",content:`Create structured business plan for ${idea} with budget ₹${budget}`}
+        {role:"user",content:`Create professional structured business plan for ${idea} with ₹${budget}`}
       ]
     })
   });
 
-  const data = await response.json();
-
-  document.getElementById("output").innerHTML =
-    data.choices[0].message.content.replace(/\n/g,"<br>");
+  const data=await response.json();
+  document.getElementById("output").innerHTML=data.choices[0].message.content.replace(/\n/g,"<br>");
 }
 
 function calculateProfit(){
@@ -219,10 +270,6 @@ function calculateProfit(){
   document.getElementById("exp").innerText="₹"+cost;
   document.getElementById("profit").innerText="₹"+profit;
   document.getElementById("breakeven").innerText=breakeven.toFixed(1);
-
-  financeChart.data.datasets[0].data=[revenue];
-  financeChart.data.datasets[1].data=[cost];
-  financeChart.update();
 }
 
 function addProduct(){
@@ -231,74 +278,29 @@ function addProduct(){
   const sell=parseFloat(document.getElementById("sellPrice").value);
   const qty=parseFloat(document.getElementById("quantity").value);
 
-  const profitUnit=sell-cost;
-  const totalValue=sell*qty;
-
-  products.push({name,cost,sell,qty,profitUnit,totalValue});
-
-  displayProducts();
+  products.push({name,cost,sell,qty});
+  renderProducts();
 }
 
-function displayProducts(){
-  let html="<h4>Product List:</h4>";
-  products.forEach(p=>{
-    html+=`${p.name} | Qty:${p.qty} | Profit/Unit:₹${p.profitUnit}<br>`;
+function renderProducts(){
+  let html="<table><tr><th>Name</th><th>Cost</th><th>Sell</th><th>Qty</th><th>Delete</th></tr>";
+  products.forEach((p,index)=>{
+    html+=`<tr>
+      <td>${p.name}</td>
+      <td>₹${p.cost}</td>
+      <td>₹${p.sell}</td>
+      <td>${p.qty}</td>
+      <td><button class="delete-btn" onclick="deleteProduct(${index})">X</button></td>
+    </tr>`;
   });
+  html+="</table>";
   document.getElementById("productList").innerHTML=html;
 }
 
-function saveBusinessData(){
-  const data={
-    name:document.getElementById("bizName").value,
-    industry:document.getElementById("industry").value,
-    revenue:document.getElementById("bizRevenue").value,
-    expense:document.getElementById("bizExpense").value,
-    products:products
-  };
-  localStorage.setItem("metocartData",JSON.stringify(data));
-  alert("Business Data Saved");
+function deleteProduct(index){
+  products.splice(index,1);
+  renderProducts();
 }
-
-async function generateAdvice(){
-  const stored=JSON.parse(localStorage.getItem("metocartData"));
-  if(!stored){
-    alert("Save business data first");
-    return;
-  }
-
-  document.getElementById("businessAdvice").innerHTML="Generating Advice...";
-
-  const response=await fetch("https://api.groq.com/openai/v1/chat/completions",{
-    method:"POST",
-    headers:{
-      "Authorization":"Bearer "+API_KEY,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      model:"llama-3.1-8b-instant",
-      messages:[
-        {role:"system",content:"You are a retail growth advisor."},
-        {role:"user",content:`Here is my business data: ${JSON.stringify(stored)}. Give daily practical improvement plan.`}
-      ]
-    })
-  });
-
-  const data=await response.json();
-  document.getElementById("businessAdvice").innerHTML=
-    data.choices[0].message.content.replace(/\n/g,"<br>");
-}
-
-const ctx=document.getElementById("financeChart");
-const financeChart=new Chart(ctx,{
-  type:'bar',
-  data:{
-    labels:['This Month'],
-    datasets:[
-      {label:'Revenue',data:[0],backgroundColor:'#00c6ff'},
-      {label:'Expense',data:[0],backgroundColor:'#ff4b2b'}
-    ]
-  }
-});
 </script>
 
 </body>
