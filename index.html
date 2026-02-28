@@ -1,118 +1,193 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Me2Cart AI - Business Assistant</title>
+    <title>Metocart AI - Business Assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    margin: 0;
+    padding: 0;
+    color: white;
+}
 
-        .container {
-            width: 95%;
-            max-width: 750px;
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-        }
+/* NAVBAR */
+.navbar {
+    background: rgba(0,0,0,0.7);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 15px;
-        }
+.logo {
+    font-weight: bold;
+    font-size: 18px;
+}
 
-        #chat-box {
-            flex: 1;
-            height: 420px;
-            overflow-y: auto;
-            border-radius: 10px;
-            padding: 15px;
-            background: #f4f6f8;
-            margin-bottom: 15px;
-        }
+.nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 14px;
+}
 
-        .user {
-            text-align: right;
-            margin: 10px 0;
-        }
+.nav-links a:hover {
+    text-decoration: underline;
+}
 
-        .user span {
-            background: #007bff;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 15px;
-            display: inline-block;
-            max-width: 75%;
-        }
+/* MAIN */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
 
-        .bot {
-            text-align: left;
-            margin: 10px 0;
-        }
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-        .bot span {
-            background: #e9ecef;
-            padding: 10px 12px;
-            border-radius: 15px;
-            display: inline-block;
-            max-width: 80%;
-        }
+.animated-title {
+    font-size: 32px;
+    margin: 0;
+    animation: fadeIn 1.5s ease-in-out;
+}
 
-        .input-area {
-            display: flex;
-        }
+.subtitle {
+    margin: 5px 0;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: #ddd;
+}
 
-        input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-        }
+.tagline {
+    font-size: 13px;
+    color: #aaa;
+}
 
-        button {
-            padding: 10px 15px;
-            border-radius: 8px;
-            border: none;
-            background: #007bff;
-            color: white;
-            margin-left: 5px;
-            cursor: pointer;
-        }
+/* CHAT BOX */
+.chat-container {
+    width: 95%;
+    max-width: 750px;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
 
-        button:hover {
-            background: #0056b3;
-        }
-    </style>
+#chat-box {
+    height: 420px;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f4f6f8;
+    margin-bottom: 15px;
+    color: black;
+}
+
+/* CHAT BUBBLES */
+.user {
+    text-align: right;
+    margin: 10px 0;
+}
+
+.user span {
+    background: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    max-width: 75%;
+}
+
+.bot {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.bot span {
+    background: #e9ecef;
+    padding: 10px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    max-width: 80%;
+}
+
+/* INPUT */
+.input-area {
+    display: flex;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #007bff;
+    color: white;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>Me2Cart AI 🚀</h1>
-
-    <div id="chat-box"></div>
-
-    <div class="input-area">
-        <input type="text" id="question" placeholder="Ask your business question..." />
-        <button onclick="askAI()">Ask</button>
-        <button onclick="clearChat()">Clear</button>
+<nav class="navbar">
+    <div class="logo">🚀 Metocart AI</div>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Features</a>
+        <a href="#">About</a>
     </div>
+</nav>
+
+<div class="main-container">
+
+    <div class="header">
+        <h1 class="animated-title">Metocart AI</h1>
+        <p class="subtitle">Business Assistant</p>
+        <p class="tagline">Build Smart. Start Smart. Grow Fast.</p>
+    </div>
+
+    <div class="chat-container">
+        <div id="chat-box"></div>
+
+        <div class="input-area">
+            <input type="text" id="question" placeholder="Ask your business question..." />
+            <button onclick="askAI()">Ask</button>
+            <button onclick="clearChat()">Clear</button>
+        </div>
+    </div>
+
 </div>
 
 <script>
-const API_KEY = "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";   // ⚠ Replace with your Groq API key
+
+const API_KEY = "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"; // 🔴 Replace this
 
 async function askAI() {
     const input = document.getElementById("question");
@@ -132,7 +207,7 @@ async function askAI() {
 
     chat.innerHTML += `
         <div class="bot" id="${loaderId}">
-            <span><i>Me2Cart AI is thinking...</i></span>
+            <span><i>Metocart AI is thinking...</i></span>
         </div>
     `;
 
@@ -148,14 +223,13 @@ async function askAI() {
             body: JSON.stringify({
                 model: "llama-3.1-8b-instant",
                 messages: [
-                    { role: "system", content: "You are a professional business consultant AI. Give clear structured answers with headings and line breaks." },
+                    { role: "system", content: "You are a professional business consultant AI. Give structured answers with headings, bullet points and clear formatting." },
                     { role: "user", content: question }
                 ]
             })
         });
 
         const data = await response.json();
-
         document.getElementById(loaderId)?.remove();
 
         if (!response.ok) {
@@ -193,14 +267,13 @@ function clearChat() {
     document.getElementById("chat-box").innerHTML = "";
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("question")
-    .addEventListener("keypress", function(e) {
-        if (e.key === "Enter") {
-            askAI();
-        }
-    });
+document.getElementById("question")
+.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        askAI();
+    }
 });
+
 </script>
 
 </body>
