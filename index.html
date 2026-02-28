@@ -1,102 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Metocart AI</title>
+<title>Metocart AI - Merchant System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body{
   margin:0;
   font-family:'Inter',sans-serif;
-  background:#0e1117;
+  background:#000;
   color:#fff;
 }
 
-/* LOGIN */
-.login-container{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.login-card{
-  background:#161b22;
-  padding:40px;
-  border-radius:12px;
-  width:320px;
-  text-align:center;
-}
-
-.login-card input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border-radius:6px;
-  border:1px solid #333;
-  background:#0e1117;
-  color:#fff;
-}
-
-.login-card button{
-  width:100%;
-  padding:10px;
-  background:#00c6ff;
-  border:none;
-  border-radius:6px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-/* DASHBOARD */
-.dashboard{
-  display:none;
-  min-height:100vh;
-}
+.dashboard{display:none;min-height:100vh;}
 
 .sidebar{
-  width:220px;
-  background:#161b22;
+  width:230px;
+  background:#111;
   padding:20px;
   position:fixed;
   height:100%;
+  border-right:1px solid #222;
 }
 
-.sidebar h2{
-  color:#00c6ff;
-}
+.sidebar h2{margin-bottom:20px;}
 
 .sidebar button{
   width:100%;
   padding:10px;
   margin:8px 0;
-  background:#0e1117;
+  background:#000;
   border:1px solid #333;
-  color:#ccc;
+  color:#fff;
   border-radius:6px;
   cursor:pointer;
 }
 
 .sidebar button:hover{
-  background:#00c6ff;
+  background:#fff;
   color:#000;
 }
 
-.main{
-  margin-left:240px;
-  padding:30px;
-}
+.main{margin-left:250px;padding:30px;}
 
-.section{
-  display:none;
-}
-
-.active{
-  display:block;
-}
+.section{display:none;}
+.active{display:block;}
 
 .card{
-  background:#161b22;
+  background:#fff;
+  color:#000;
   padding:20px;
   border-radius:10px;
   margin-bottom:20px;
@@ -104,43 +57,56 @@ body{
 
 input{
   width:100%;
-  padding:10px;
-  margin:8px 0;
+  padding:8px;
+  margin:6px 0;
   border-radius:6px;
-  border:1px solid #333;
-  background:#0e1117;
-  color:#fff;
+  border:1px solid #ccc;
 }
 
 button.primary{
-  background:#00c6ff;
+  background:#000;
+  color:#fff;
+  padding:8px 14px;
   border:none;
-  padding:8px 12px;
   border-radius:6px;
   cursor:pointer;
+}
+
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.kpi{
+  background:#fff;
+  color:#000;
+  padding:15px;
+  border-radius:8px;
+  text-align:center;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  margin-top:10px;
 }
 
 th,td{
   padding:8px;
-  border-bottom:1px solid #333;
+  border-bottom:1px solid #ddd;
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN UI -->
-<div class="login-container" id="loginScreen">
-  <div class="login-card">
+<!-- LOGIN -->
+<div id="loginScreen" style="display:flex;height:100vh;align-items:center;justify-content:center;">
+  <div style="background:#111;padding:40px;border-radius:10px;">
     <h2>Metocart AI</h2>
     <input type="email" placeholder="Email">
     <input type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <button onclick="login()" style="width:100%;padding:10px;margin-top:10px;">Login</button>
   </div>
 </div>
 
@@ -151,50 +117,46 @@ th,td{
   <h2>Metocart</h2>
   <button onclick="showSection('home')">Dashboard</button>
   <button onclick="showSection('inventory')">Inventory</button>
-  <button onclick="showSection('sales')">Sales</button>
   <button onclick="showSection('ai')">AI Tools</button>
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="main">
 
-<!-- Dashboard Section -->
+<!-- DASHBOARD -->
 <div id="home" class="section active">
-  <div class="card">
-    <h2>Welcome to Merchant Dashboard</h2>
-    <p>Manage your business operations efficiently.</p>
+  <h2>Business Overview</h2>
+
+  <div class="kpis">
+    <div class="kpi"><h3 id="totalRevenue">₹0</h3><p>Total Revenue</p></div>
+    <div class="kpi"><h3 id="totalCost">₹0</h3><p>Total Cost</p></div>
+    <div class="kpi"><h3 id="totalProfit">₹0</h3><p>Total Profit</p></div>
   </div>
+
+  <div id="invoiceBox"></div>
 </div>
 
-<!-- Inventory -->
+<!-- INVENTORY -->
 <div id="inventory" class="section">
   <div class="card">
     <h2>Inventory Manager</h2>
+
     <input type="text" id="pname" placeholder="Product Name">
     <input type="number" id="pcost" placeholder="Cost Price">
     <input type="number" id="psell" placeholder="Selling Price">
     <input type="number" id="pqty" placeholder="Quantity">
     <button class="primary" onclick="addProduct()">Add Product</button>
-    <div id="productTable"></div>
-  </div>
-</div>
 
-<!-- Sales -->
-<div id="sales" class="section">
-  <div class="card">
-    <h2>Daily Sales Log</h2>
-    <input type="number" id="salesInput" placeholder="Today's Sales">
-    <button class="primary" onclick="addSales()">Add</button>
-    <div id="salesList"></div>
+    <div id="productTable"></div>
   </div>
 </div>
 
 <!-- AI -->
 <div id="ai" class="section">
   <div class="card">
-    <h2>AI Business Plan</h2>
+    <h2>AI Business Plan Generator</h2>
     <input type="text" id="idea" placeholder="Business Idea">
-    <button class="primary" onclick="generatePlan()">Generate</button>
+    <button class="primary" onclick="generatePlan()">Generate Plan</button>
     <div id="aiOutput"></div>
   </div>
 </div>
@@ -203,8 +165,12 @@ th,td{
 </div>
 
 <script>
+
+const API_KEY="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";
+
 let products=[];
-let sales=[];
+let totalRevenue=0;
+let totalCost=0;
 
 function login(){
   document.getElementById("loginScreen").style.display="none";
@@ -212,8 +178,7 @@ function login(){
 }
 
 function logout(){
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("loginScreen").style.display="flex";
+  location.reload();
 }
 
 function showSection(id){
@@ -223,40 +188,84 @@ function showSection(id){
 
 function addProduct(){
   const name=document.getElementById("pname").value;
-  const cost=document.getElementById("pcost").value;
-  const sell=document.getElementById("psell").value;
-  const qty=document.getElementById("pqty").value;
+  const cost=parseFloat(document.getElementById("pcost").value);
+  const sell=parseFloat(document.getElementById("psell").value);
+  const qty=parseInt(document.getElementById("pqty").value);
 
   products.push({name,cost,sell,qty});
   renderProducts();
 }
 
 function renderProducts(){
-  let html="<table><tr><th>Name</th><th>Cost</th><th>Sell</th><th>Qty</th></tr>";
-  products.forEach(p=>{
-    html+=`<tr><td>${p.name}</td><td>${p.cost}</td><td>${p.sell}</td><td>${p.qty}</td></tr>`;
+  let html="<table><tr><th>Name</th><th>Cost</th><th>Sell</th><th>Qty</th><th>Sell</th></tr>";
+
+  products.forEach((p,index)=>{
+    html+=`<tr>
+      <td>${p.name}</td>
+      <td>₹${p.cost}</td>
+      <td>₹${p.sell}</td>
+      <td>${p.qty}</td>
+      <td><button onclick="sellProduct(${index})">Sell</button></td>
+    </tr>`;
   });
+
   html+="</table>";
   document.getElementById("productTable").innerHTML=html;
 }
 
-function addSales(){
-  const val=document.getElementById("salesInput").value;
-  sales.push(val);
-  renderSales();
+function sellProduct(index){
+  let p=products[index];
+  if(p.qty<=0){alert("Out of stock");return;}
+
+  p.qty--;
+
+  totalRevenue+=p.sell;
+  totalCost+=p.cost;
+
+  updateKPIs();
+
+  document.getElementById("invoiceBox").innerHTML=
+  `<div class="card">
+    <h3>Invoice Slip</h3>
+    Product: ${p.name}<br>
+    Selling Price: ₹${p.sell}<br>
+    Profit: ₹${p.sell - p.cost}<br>
+    Date: ${new Date().toLocaleString()}
+  </div>`;
+
+  renderProducts();
 }
 
-function renderSales(){
-  let html="<ul>";
-  sales.forEach(s=>html+=`<li>₹${s}</li>`);
-  html+="</ul>";
-  document.getElementById("salesList").innerHTML=html;
+function updateKPIs(){
+  document.getElementById("totalRevenue").innerText="₹"+totalRevenue;
+  document.getElementById("totalCost").innerText="₹"+totalCost;
+  document.getElementById("totalProfit").innerText="₹"+(totalRevenue-totalCost);
 }
 
-function generatePlan(){
+async function generatePlan(){
   const idea=document.getElementById("idea").value;
-  document.getElementById("aiOutput").innerHTML="Business plan for: "+idea;
+  document.getElementById("aiOutput").innerHTML="Generating...";
+
+  const response=await fetch("https://api.groq.com/openai/v1/chat/completions",{
+    method:"POST",
+    headers:{
+      "Authorization":"Bearer "+API_KEY,
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      model:"llama-3.1-8b-instant",
+      messages:[
+        {role:"system",content:"You are an expert startup advisor."},
+        {role:"user",content:`Create structured professional business plan for ${idea}`}
+      ]
+    })
+  });
+
+  const data=await response.json();
+  document.getElementById("aiOutput").innerHTML=
+    data.choices[0].message.content.replace(/\n/g,"<br>");
 }
+
 </script>
 
 </body>
