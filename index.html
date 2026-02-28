@@ -3,8 +3,83 @@
 <head>
     <title>Metocart AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
-        <body>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 700px;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #chat-box {
+            height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            padding: 15px;
+            background: #f4f6f8;
+            margin-bottom: 15px;
+        }
+
+        .user {
+            text-align: right;
+            margin: 10px 0;
+            color: #007bff;
+        }
+
+        .bot {
+            text-align: left;
+            margin: 10px 0;
+            color: #222;
+        }
+
+        .input-area {
+            display: flex;
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            background: #007bff;
+            color: white;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
 <div class="container">
     <h1>Metocart AI 🚀</h1>
 
@@ -16,18 +91,9 @@
         <button onclick="clearChat()">Clear</button>
     </div>
 </div>
-</body>
-
-<h1>Metocart AI - Business Assistant</h1>
-
-<div id="chat-box"></div>
-
-<input type="text" id="question" placeholder="Ask your business question..." />
-<button onclick="askAI()">Ask</button>
-<button onclick="clearChat()">Clear</button>
 
 <script>
-const API_KEY = "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";  // <-- put your Groq key here
+const API_KEY = "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";  // <-- Put your key here
 
 async function askAI() {
     const input = document.getElementById("question");
@@ -49,7 +115,7 @@ async function askAI() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-               model: "llama-3.1-8b-instant", 
+                model: "llama-3.1-8b-instant",
                 messages: [
                     { role: "system", content: "You are a business expert AI assistant." },
                     { role: "user", content: question }
@@ -72,18 +138,19 @@ async function askAI() {
         chat.innerHTML += `<div class="bot">Network error.</div>`;
     }
 }
-            /* ===== ADD BELOW THIS LINE ===== */
-
-document.getElementById("question")
-.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        askAI();
-    }
-});
 
 function clearChat() {
     document.getElementById("chat-box").innerHTML = "";
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("question")
+    .addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            askAI();
+        }
+    });
+});
 </script>
 
 </body>
