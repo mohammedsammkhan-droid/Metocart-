@@ -4,41 +4,19 @@
     <title>Metocart AI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        h1 { margin-top: 30px; }
-        #chat-box {
-            width: 90%;
-            max-width: 700px;
-            height: 400px;
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            overflow-y: auto;
-            margin: 20px auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: left;
-        }
-        .user { color: blue; margin: 10px 0; text-align: right; }
-        .bot { color: black; margin: 10px 0; }
-        input {
-            width: 70%;
-            padding: 10px;
-        }
-        button {
-            padding: 10px 15px;
-            background: #0d6efd;
-            color: white;
-            border: none;
-        }
-    </style>
-</head>
-<body>
+        <body>
+<div class="container">
+    <h1>Metocart AI 🚀</h1>
+
+    <div id="chat-box"></div>
+
+    <div class="input-area">
+        <input type="text" id="question" placeholder="Ask your business question..." />
+        <button onclick="askAI()">Ask</button>
+        <button onclick="clearChat()">Clear</button>
+    </div>
+</div>
+</body>
 
 <h1>Metocart AI - Business Assistant</h1>
 
@@ -46,6 +24,7 @@
 
 <input type="text" id="question" placeholder="Ask your business question..." />
 <button onclick="askAI()">Ask</button>
+<button onclick="clearChat()">Clear</button>
 
 <script>
 const API_KEY = "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";  // <-- put your Groq key here
@@ -92,6 +71,18 @@ async function askAI() {
     } catch (err) {
         chat.innerHTML += `<div class="bot">Network error.</div>`;
     }
+}
+            /* ===== ADD BELOW THIS LINE ===== */
+
+document.getElementById("question")
+.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        askAI();
+    }
+});
+
+function clearChat() {
+    document.getElementById("chat-box").innerHTML = "";
 }
 </script>
 
