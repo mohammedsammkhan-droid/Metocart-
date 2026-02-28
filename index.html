@@ -3,48 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metocart AI | Merchant OS</title>
+    <title>Metocart | Hybrid Solutions Pvt Ltd</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #6366f1; --dark-bg: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --accent: #10b981; }
         body { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark-bg); color: var(--text-main); }
-        
         #loginScreen { height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle at top right, #1b1b4b, #0f172a); }
-        .login-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); padding: 40px; border-radius: 24px; width: 320px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        
+        .login-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); padding: 40px; border-radius: 24px; width: 340px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .sidebar { width: 260px; background: #020617; position: fixed; height: 100%; padding: 24px; border-right: 1px solid #1e293b; }
         .nav-btn { width: 100%; padding: 14px; margin: 8px 0; background: transparent; color: #94a3b8; border: none; border-radius: 12px; text-align: left; cursor: pointer; transition: 0.2s; font-weight: 600; }
         .nav-btn.active { background: var(--primary); color: white; }
-        
         .main-content { margin-left: 280px; padding: 40px; }
         .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: var(--card-bg); padding: 24px; border-radius: 20px; border: 1px solid #334155; }
-        
         .card { background: var(--card-bg); padding: 25px; border-radius: 20px; border: 1px solid #334155; margin-bottom: 20px; }
         input, select { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; color: white; margin: 5px 0; width: 100%; box-sizing: border-box; }
         button.action-btn { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; }
-        button.action-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { text-align: left; color: #94a3b8; padding: 12px; border-bottom: 1px solid #334155; }
         td { padding: 12px; border-bottom: 1px solid #1e293b; }
         .section { display: none; }
         .active-section { display: block; }
-
-        /* Print Styles for the specific slip */
-        @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
-        }
+        .cart-item { background: #0f172a; padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; }
     </style>
 </head>
 <body>
 
 <div id="loginScreen">
     <div class="login-card">
-        <h1 style="color:var(--primary)">Metocart <span style="color:white">AI</span></h1>
-        <p style="color:#94a3b8; font-size: 0.9em; margin-bottom: 20px;">Merchant OS v1.0</p>
+        <h1 style="color:var(--primary)">Metocart</h1>
+        <p style="color:#94a3b8; margin-top:-10px; font-size:0.8em;">Hybrid Solutions Pvt Ltd</p>
         <input type="text" id="username" placeholder="Username" value="admin">
         <input type="password" id="password" placeholder="Password" value="1234">
         <button class="action-btn" onclick="login()">Sign In</button>
@@ -53,39 +41,65 @@
 
 <div class="dashboard-container" id="dashboard" style="display:none">
     <div class="sidebar">
-        <h2 style="color:var(--primary); margin-bottom: 30px;">Metocart</h2>
+        <h2 style="color:var(--primary); margin-bottom: 5px;">Metocart</h2>
+        <p style="color:#64748b; font-size: 0.7em; margin-bottom: 30px;">Hybrid Solutions Pvt Ltd</p>
         <button class="nav-btn active" onclick="showTab('home')">🏠 Dashboard</button>
-        <button class="nav-btn" onclick="showTab('inventory')">📦 Smart Inventory</button>
+        <button class="nav-btn" onclick="showTab('billing')">🧾 Fast Billing</button>
+        <button class="nav-btn" onclick="showTab('inventory')">📦 Inventory</button>
         <button class="nav-btn" onclick="showTab('customers')">👥 Customers</button>
-        <button class="nav-btn" onclick="showTab('billing')">🧾 GST Billing</button>
         <button class="nav-btn" onclick="showTab('ai')">🤖 AI Advisor</button>
-        <button class="nav-btn" style="margin-top: 50px; color:#ef4444" onclick="location.reload()">🔒 Logout</button>
+        <button class="nav-btn" style="margin-top: 50px; color:#ef4444" onclick="resetApp()">🗑️ Reset Data</button>
     </div>
 
     <div class="main-content">
         <div id="home" class="section active-section">
             <h1>Business Overview</h1>
             <div class="kpi-grid">
-                <div class="kpi-card"><p>Revenue</p><h2 id="rev">₹0</h2></div>
-                <div class="kpi-card"><p>Profit</p><h2 id="profit">₹0</h2></div>
-                <div class="kpi-card"><p>GST Collected</p><h2 id="gstTotal">₹0</h2></div>
-                <div class="kpi-card"><p>Stock Value</p><h2 id="invValue">₹0</h2></div>
+                <div class="kpi-card"><p>Total Sales</p><h2 id="rev">₹0</h2></div>
+                <div class="kpi-card"><p>Net Profit</p><h2 id="profit">₹0</h2></div>
+                <div class="kpi-card"><p>GST (18%)</p><h2 id="gstTotal">₹0</h2></div>
+            </div>
+        </div>
+
+        <div id="billing" class="section">
+            <div class="card">
+                <h2>New Transaction</h2>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:10px; margin-bottom: 15px;">
+                    <input id="billCustName" list="customerList" placeholder="Enter Customer Name">
+                    <datalist id="customerList"></datalist>
+                    <input id="billCustPhone" placeholder="Phone Number (Optional)">
+                </div>
+                <hr style="border:0; border-top:1px solid #334155; margin:20px 0;">
+                <div style="display:grid; grid-template-columns: 2fr 1fr 100px; gap:10px;">
+                    <select id="billProduct"><option value="">Select Item</option></select>
+                    <input type="number" id="billQty" value="1" placeholder="Qty">
+                    <button class="action-btn" onclick="addToCart()" style="background:var(--accent)">Add</button>
+                </div>
+
+                <div id="cartDisplay" style="margin-top:20px;">
+                    <div id="cartItemsList"></div>
+                    <div id="cartSummary" style="display:none; text-align:right; margin-top:20px; border-top:1px solid #334155; padding-top:15px;">
+                        <h3 id="cartTotalText" style="color:var(--accent)">Total: ₹0</h3>
+                        <button class="action-btn" style="width:220px" onclick="fastCheckout()">Generate & Print Bill</button>
+                    </div>
+                </div>
+                <div id="invoiceOutput" style="margin-top:20px;"></div>
             </div>
         </div>
 
         <div id="inventory" class="section">
             <div class="card">
-                <h2>Product Catalog</h2>
+                <h2>Product Management</h2>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input id="pname" placeholder="Item Name">
+                    <input id="pname" placeholder="Product Name">
                     <input id="pcategory" placeholder="HSN Code">
                     <input type="number" id="pcost" placeholder="Cost Price">
-                    <input type="number" id="psell" placeholder="Selling Price">
-                    <input type="number" id="pqty" placeholder="Stock Qty">
+                    <input type="number" id="psell" placeholder="Sale Price">
+                    <input type="number" id="pqty" placeholder="Initial Stock">
                 </div>
-                <button class="action-btn" style="margin-top:15px;" onclick="addProduct()">Add Product</button>
-                <table id="productTable">
-                    <thead><tr><th>Product</th><th>HSN</th><th>Stock</th><th>Action</th></tr></thead>
+                <button class="action-btn" style="margin-top:15px;" onclick="addProduct()">Save to Inventory</button>
+                <table>
+                    <thead><tr><th>Product</th><th>HSN</th><th>Stock</th></tr></thead>
                     <tbody id="inventoryBody"></tbody>
                 </table>
             </div>
@@ -93,12 +107,7 @@
 
         <div id="customers" class="section">
             <div class="card">
-                <h2>Customer Directory</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <input id="cname" placeholder="Customer Name">
-                    <input id="cphone" placeholder="Phone Number">
-                </div>
-                <button class="action-btn" style="margin-top:15px;" onclick="addCustomer()">Register Customer</button>
+                <h2>Customer Registry</h2>
                 <table>
                     <thead><tr><th>Name</th><th>Phone</th></tr></thead>
                     <tbody id="customerBody"></tbody>
@@ -106,51 +115,48 @@
             </div>
         </div>
 
-        <div id="billing" class="section">
-            <div class="card">
-                <h2>Quick GST Billing (18%)</h2>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom: 15px;">
-                    <div>
-                        <label>Customer</label>
-                        <select id="billCustomer"><option value="">Select Customer</option></select>
-                    </div>
-                    <div>
-                        <label>Product</label>
-                        <select id="billProduct"><option value="">Select Product</option></select>
-                    </div>
-                </div>
-                <input type="number" id="billQty" placeholder="Quantity to Sell">
-                <button class="action-btn" style="margin-top:10px;" onclick="createInvoice()">Generate & Save Bill</button>
-                
-                <div id="invoiceOutput" style="margin-top:20px;"></div>
-            </div>
-        </div>
-
         <div id="ai" class="section">
             <div class="card">
                 <h2>AI Growth Advisor</h2>
-                <p style="color:#94a3b8">Get instant insights based on your store's real data.</p>
-                <input id="aiQuestion" placeholder="Example: Analysis of my current stock and profit margins?">
+                <input id="aiQuestion" placeholder="How can I improve my profit margins?">
                 <button class="action-btn" style="width:150px; margin-top:10px;" onclick="generateAI()">Ask AI</button>
-                <div id="aiOutput" style="margin-top:20px; padding:20px; background:#0f172a; border-radius:12px; line-height: 1.6; border: 1px solid #1e293b;"></div>
+                <div id="aiOutput" style="margin-top:20px; padding:15px; background:#0f172a; border-radius:10px;"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let products = [];
-    let customers = [];
-    let totals = { rev: 0, profit: 0, gst: 0 };
-    
-    // API KEY FOR TESTING
+    // CORE DATA & STORAGE
+    let products = JSON.parse(localStorage.getItem('hy_products')) || [];
+    let customers = JSON.parse(localStorage.getItem('hy_customers')) || [];
+    let totals = JSON.parse(localStorage.getItem('hy_totals')) || { rev: 0, profit: 0, gst: 0 };
+    let currentCart = [];
+
     const GROQ_API_KEY = "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";
+
+    window.onload = () => {
+        renderInventory();
+        renderCustomers();
+        updateLists();
+        updateStats();
+    };
+
+    function saveData() {
+        localStorage.setItem('hy_products', JSON.stringify(products));
+        localStorage.setItem('hy_customers', JSON.stringify(customers));
+        localStorage.setItem('hy_totals', JSON.stringify(totals));
+    }
+
+    function resetApp() {
+        if(confirm("Delete all store data?")) { localStorage.clear(); location.reload(); }
+    }
 
     function login() {
         if(document.getElementById('username').value === "admin" && document.getElementById('password').value === "1234") {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-        } else { alert("Invalid Credentials"); }
+        } else { alert("Access Denied"); }
     }
 
     function showTab(id) {
@@ -160,39 +166,21 @@
         event.currentTarget.classList.add('active');
     }
 
+    // INVENTORY LOGIC
     function addProduct() {
-        if(!pname.value || !pqty.value) return alert("Fill details");
         const p = { 
-            name: pname.value, 
-            hsn: pcategory.value || "N/A", 
-            cost: parseFloat(pcost.value) || 0, 
-            sell: parseFloat(psell.value) || 0, 
-            qty: parseInt(pqty.value) || 0 
+            name: pname.value, hsn: pcategory.value, 
+            cost: parseFloat(pcost.value), sell: parseFloat(psell.value), qty: parseInt(pqty.value) 
         };
         products.push(p);
+        saveData();
         renderInventory();
         updateLists();
-        updateStats();
-        // Clear fields
         pname.value = ''; pcost.value = ''; psell.value = ''; pqty.value = '';
     }
 
-    function addCustomer() {
-        if(!cname.value) return alert("Enter Name");
-        customers.push({ name: cname.value, phone: cphone.value || "N/A" });
-        renderCustomers();
-        updateLists();
-        cname.value = ''; cphone.value = '';
-    }
-
     function renderInventory() {
-        inventoryBody.innerHTML = products.map((p, i) => `
-            <tr>
-                <td>${p.name}</td>
-                <td>${p.hsn}</td>
-                <td style="color: ${p.qty < 5 ? '#ef4444' : 'inherit'}">${p.qty}</td>
-                <td><button onclick="products.splice(${i},1); renderInventory(); updateLists();" style="background:none; border:none; color:#ef4444; cursor:pointer;">Delete</button></td>
-            </tr>`).join('');
+        inventoryBody.innerHTML = products.map(p => `<tr><td>${p.name}</td><td>${p.hsn}</td><td>${p.qty}</td></tr>`).join('');
     }
 
     function renderCustomers() {
@@ -200,120 +188,131 @@
     }
 
     function updateLists() {
-        billProduct.innerHTML = '<option value="">Select Product</option>' + products.map((p, i) => `<option value="${i}">${p.name} (Stock: ${p.qty})</option>`).join('');
-        billCustomer.innerHTML = '<option value="">Select Customer</option>' + customers.map((c, i) => `<option value="${i}">${c.name}</option>`).join('');
+        billProduct.innerHTML = '<option value="">Select Item</option>' + products.map((p, i) => `<option value="${i}">${p.name} (Stock: ${p.qty})</option>`).join('');
+        const list = document.getElementById('customerList');
+        list.innerHTML = customers.map(c => `<option value="${c.name}">`).join('');
     }
 
     function updateStats() {
         rev.innerText = "₹" + totals.rev.toFixed(0);
         profit.innerText = "₹" + totals.profit.toFixed(0);
         gstTotal.innerText = "₹" + totals.gst.toFixed(0);
-        invValue.innerText = "₹" + products.reduce((acc, p) => acc + (p.cost * p.qty), 0).toFixed(0);
     }
 
-    // UPDATED: BILLING + INVOICE SLIP LOGIC
-    function createInvoice() {
-        const pIndex = billProduct.value;
-        const cIndex = billCustomer.value;
-        
-        if(pIndex === "" || cIndex === "") return alert("Please select both customer and product");
+    // FAST BILLING LOGIC
+    function addToCart() {
+        const pIdx = billProduct.value;
+        const qty = parseInt(billQty.value);
+        if(pIdx === "" || qty <= 0) return alert("Select product and quantity");
 
-        const p = products[pIndex];
-        const c = customers[cIndex];
-        const q = parseInt(billQty.value);
+        const p = products[pIdx];
+        if(qty > p.qty) return alert("Insufficient stock!");
 
-        if(!p || q > p.qty || q <= 0) return alert("Invalid quantity or out of stock");
-        
-        const subtotal = p.sell * q;
-        const gstAmount = subtotal * 0.18; 
-        const totalAmount = subtotal + gstAmount;
+        currentCart.push({ 
+            id: pIdx, name: p.name, qty: qty, price: p.sell, cost: p.cost, subtotal: p.sell * qty 
+        });
+        renderCart();
+    }
 
-        // Financial Updates
-        p.qty -= q;
-        totals.rev += totalAmount;
-        totals.gst += gstAmount;
-        totals.profit += (p.sell - p.cost) * q;
-        
+    function renderCart() {
+        const list = document.getElementById('cartItemsList');
+        const summary = document.getElementById('cartSummary');
+        let total = 0;
+
+        list.innerHTML = currentCart.map((item, i) => {
+            total += item.subtotal;
+            return `<div class="cart-item">
+                <span><b>${item.name}</b> (x${item.qty})</span>
+                <span>₹${item.subtotal.toFixed(2)} <button onclick="currentCart.splice(${i},1);renderCart();" style="color:red; background:none; border:none; cursor:pointer; margin-left:10px;">✖</button></span>
+            </div>`;
+        }).join('');
+
+        summary.style.display = currentCart.length > 0 ? 'block' : 'none';
+        document.getElementById('cartTotalText').innerText = `Total: ₹${(total * 1.18).toFixed(2)}`;
+    }
+
+    function fastCheckout() {
+        const name = document.getElementById('billCustName').value;
+        const phone = document.getElementById('billCustPhone').value || "N/A";
+
+        if(!name) return alert("Enter customer name");
+        if(currentCart.length === 0) return alert("Cart is empty");
+
+        // Hybrid Solution: Auto-register if new name
+        let existingCust = customers.find(c => c.name.toLowerCase() === name.toLowerCase());
+        if(!existingCust) {
+            customers.push({ name: name, phone: phone });
+            saveData();
+            renderCustomers();
+            updateLists();
+        }
+
+        let bTotal = 0; let bProfit = 0; let bGst = 0;
+
+        currentCart.forEach(item => {
+            const p = products[item.id];
+            const itemGst = item.subtotal * 0.18;
+            p.qty -= item.qty;
+            bTotal += (item.subtotal + itemGst);
+            bGst += itemGst;
+            bProfit += (item.price - item.cost) * item.qty;
+        });
+
+        totals.rev += bTotal; totals.gst += bGst; totals.profit += bProfit;
+
+        saveData();
         updateStats();
         renderInventory();
-        updateLists();
 
-        // UI Confirmation + Print Button
-        invoiceOutput.innerHTML = `
-            <div style="padding:20px; border:2px solid var(--accent); border-radius:12px; background: rgba(16, 185, 129, 0.05); text-align:center;">
-                <h3 style="margin-top:0; color:var(--accent);">🎉 Transaction Successful</h3>
-                <p>Invoice for <b>${c.name}</b>: ₹${totalAmount.toFixed(2)}</p>
-                <button class="action-btn" style="background:#10b981; width:auto;" 
-                    onclick="printSlip('${c.name}', '${c.phone}', '${p.name}', ${q}, ${p.sell}, ${gstAmount}, ${totalAmount})">
-                    🖨️ Print Invoice Slip
-                </button>
-            </div>`;
+        printInvoice({name: name, phone: phone}, currentCart, bGst, bTotal);
+        
+        currentCart = [];
+        renderCart();
+        document.getElementById('billCustName').value = "";
+        document.getElementById('billCustPhone').value = "";
+        invoiceOutput.innerHTML = `<div style="background:rgba(16,185,129,0.1); border:1px solid var(--accent); padding:15px; border-radius:10px; color:var(--accent);">✅ Bill successfully generated for ${name}</div>`;
     }
 
-    function printSlip(custName, custPhone, prodName, qty, rate, gst, total) {
-        const printWindow = window.open('', '_blank', 'width=450,height=600');
-        const invNo = "METO-" + Math.floor(Math.random() * 9999);
-        const date = new Date().toLocaleString();
-
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Invoice ${invNo}</title>
-                <style>
-                    body { font-family: 'Courier New', monospace; padding: 20px; line-height: 1.2; font-size: 14px; }
-                    .center { text-align: center; }
-                    .dashed { border-bottom: 1px dashed #000; margin: 10px 0; }
-                    .row { display: flex; justify-content: space-between; margin: 5px 0; }
-                    .bold { font-weight: bold; }
-                </style>
-            </head>
-            <body onload="window.print(); window.close();">
-                <div class="center">
-                    <h2 style="margin:0">METOCART AI</h2>
-                    <p>Smart Retail Solutions<br>GSTIN: 27METO9988X1Z1</p>
-                </div>
-                <div class="dashed"></div>
-                <p><b>INV NO:</b> ${invNo}<br><b>DATE:</b> ${date}</p>
-                <p><b>CUSTOMER:</b> ${custName}<br><b>PHONE:</b> ${custPhone}</p>
-                <div class="dashed"></div>
-                <div class="row bold"><span>ITEM</span><span>QTY</span><span>TOTAL</span></div>
-                <div class="row"><span>${prodName} (@${rate})</span><span>${qty}</span><span>${(qty*rate).toFixed(2)}</span></div>
-                <div class="dashed"></div>
-                <div class="row"><span>Taxable Value:</span><span>₹${(qty*rate).toFixed(2)}</span></div>
-                <div class="row"><span>GST (18%):</span><span>₹${gst.toFixed(2)}</span></div>
-                <div class="row bold" style="font-size:16px;"><span>GRAND TOTAL:</span><span>₹${total.toFixed(2)}</span></div>
-                <div class="dashed"></div>
-                <p class="center" style="margin-top:20px;">~ Thank You! ~<br>Powered by Metocart AI</p>
+    function printInvoice(cust, cart, gst, grandTotal) {
+        const win = window.open('', '_blank', 'width=450,height=600');
+        const items = cart.map(i => `<div style="display:flex; justify-content:space-between"><span>${i.name} x${i.qty}</span><span>${i.subtotal.toFixed(2)}</span></div>`).join('');
+        
+        win.document.write(`
+            <body style="font-family:monospace; padding:30px;" onload="window.print(); window.close();">
+                <center>
+                    <h2 style="margin-bottom:0">HYBRID SOLUTIONS PVT LTD</h2>
+                    <p style="margin-top:0">GST INVOICE - METOCART</p>
+                </center>
+                <hr>
+                <p>Date: ${new Date().toLocaleDateString()}<br>Bill To: ${cust.name}<br>Phone: ${cust.phone}</p>
+                <hr>
+                ${items}
+                <hr>
+                <div style="display:flex; justify-content:space-between"><span>Subtotal</span><span>₹${(grandTotal - gst).toFixed(2)}</span></div>
+                <div style="display:flex; justify-content:space-between"><span>GST (18%)</span><span>₹${gst.toFixed(2)}</span></div>
+                <div style="display:flex; justify-content:space-between; font-size:1.2em; font-weight:bold; margin-top:10px;"><span>GRAND TOTAL</span><span>₹${grandTotal.toFixed(2)}</span></div>
+                <hr>
+                <center><p>Powered by Metocart AI</p></center>
             </body>
-            </html>
         `);
-        printWindow.document.close();
+        win.document.close();
     }
 
     async function generateAI() {
-        const aiOutput = document.getElementById('aiOutput');
-        const question = document.getElementById('aiQuestion').value;
-        if (!question) return alert("Ask a question first.");
-
-        aiOutput.innerHTML = "⏳ Metocart AI is crunching the numbers...";
-
+        const out = document.getElementById('aiOutput');
+        out.innerHTML = "✨ Processing insights...";
         try {
-            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
                 headers: { "Authorization": `Bearer ${GROQ_API_KEY}`, "Content-Type": "application/json" },
                 body: JSON.stringify({
                     model: "llama-3.3-70b-versatile",
-                    messages: [
-                        { role: "system", content: "You are the Metocart AI Business Advisor. Provide professional, short, bulleted retail advice for the Indian market. Use the data provided." },
-                        { role: "user", content: `Data: Revenue ₹${totals.rev}, Profit ₹${totals.profit}, GST ₹${totals.gst}, Products: ${JSON.stringify(products)}. Question: ${question}` }
-                    ]
+                    messages: [{ role: "user", content: `Help: ${aiQuestion.value}. Store Stats: Rev ₹${totals.rev}, Profit ₹${totals.profit}. List: ${JSON.stringify(products)}` }]
                 })
             });
-            const data = await response.json();
-            aiOutput.innerHTML = `<b>AI Insights:</b><br>${data.choices[0].message.content.replace(/\n/g, "<br>")}`;
-        } catch (e) {
-            aiOutput.innerHTML = "<span style='color:#ef4444'>AI Error. Check Connection.</span>";
-        }
+            const data = await res.json();
+            out.innerText = data.choices[0].message.content;
+        } catch (e) { out.innerText = "Connection error."; }
     }
 </script>
 </body>
